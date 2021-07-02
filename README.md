@@ -28,11 +28,11 @@ python test_video.py --arch BNInception --dataset something  --weights pretrain/
 ```
 
 # Running 3D-CNN model on sub-videos
-1. To specifiy the region of interest based off of the first frame of the video and perform sub-video label prediction
+1. (video file specified on lines 11 and 12 of canvas_test_2.py) To specifiy the region of interest based off of the first frame of the video and perform sub-video label prediction
 ```
 python canvas_test_2.py
 ```
-2. To specifiy the region of interest while the video is being streamed and perform sub-video label prediction
+2. (video file specified on line 10 of canvas_test_2.py) To specifiy the region of interest while the video is being streamed and perform sub-video label prediction
 
 ```
 python canvas_test_4.py
