@@ -31,7 +31,6 @@ python test_video.py --arch BNInception --dataset something  --weights pretrain/
 1. To specifiy the region of interest based off of the first frame of the video and perform sub-video label prediction
 ```
 python canvas_test_2.py
-
 ```
 2. To specifiy the region of interest while the video is being streamed and perform sub-video label prediction
 
