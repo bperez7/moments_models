@@ -32,10 +32,10 @@ python test_video.py --arch BNInception --dataset something  --weights pretrain/
 ```
 python canvas_test_2.py
 ```
-2. (video file specified on line 10 of canvas_test_4.py) To specifiy the region of interest while the video is being streamed and perform sub-video label prediction
+2. To specifiy the region of interest while the video is being streamed and perform sub-video label prediction. Parameters can be edited at the bottom of the file. 
 
 ```
-python canvas_test_4.py
+python canvas_test_6.py
 ```
 3. Be careful to only drag from the top left to bottom right, as the dimensions will be incorrectly interpreted if the box is drawn another way. 
 
