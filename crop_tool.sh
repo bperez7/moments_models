@@ -2,7 +2,7 @@
 
 
 
-while getopts l:t:h:w:f:o: flag
+while getopts l:t:h:w:f:o:b:e: flag
 do
     case "${flag}" in
          f) file=${OPTARG};;
@@ -11,7 +11,10 @@ do
 
         h) height=${OPTARG};;
         w) width=${OPTARG};;
+       # i) input=${OPTARG};;
         o) output_file=${OPTARG};;
+        b) beginning=${OPTARG};;
+        e) end=${OPTARG};;
 
 
     esac
@@ -23,7 +26,12 @@ echo "hello";
 echo "top $top"
 
 
-ffmpeg -i "$file" -filter:v "crop=${width}:${height}:${left}:${top}" -c:a copy "${output_file}".mp4
+ffmpeg -i "$file" -ss "$beginning" -t "$end" -c:v copy -c:a copy trim_ipseek_test.mp4
+
+ffmpeg -i trim_ipseek_test.mp4 -filter:v "crop=${width}:${height}:${left}:${top}" -c:a copy "${output_file}".mp4
+
+
+
 #ffmpeg -i videos/IMG_1433.MOV -filter:v "crop=80:60:20:20" -c:a copy out.mp4
 
 
