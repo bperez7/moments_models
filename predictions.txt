@@ -1,0 +1,5 @@
+0.294 -> diving
+0.111 -> lifting
+0.105 -> climbing
+0.046 -> landing
+0.033 -> falling
