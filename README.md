@@ -1,3 +1,46 @@
+# Modified Steps!
+
+1.	The existing Moments in Time model repository can be found at       https://github.com/zhoubolei/moments_models#models
+2.	The repo’s documentation is sparse, so be sure that your environment is configured to meet the following requirements (flexible just means newest version works fine)
+- 	Python=3.6.13
+- 	Pytorch=1.6.0, torchvision=0.7.0, cudatoolkit=10.1
+-	Cv2=3.4.2 (flexible)
+-	Moviepy=1.0.1 (flexible)
+-	Ffmpeg (flexible)
+-	Pyyaml (flexible)
+3. You should be able to run the 3D CNN model with the original repo's commands if these requirements are met.
+4.	In order to run the TRN models, a couple of corrective steps have to be taken
+-	Comment out line 35 of the pytorch_load.py file of the BNInception model according to this issue https://github.com/zhoubolei/TRN-pytorch/issues/10
+-	(currently only BNInception model works) 
+-	(GPU required) change line 107 from 
+```
+checkpoint = torch.load(args.weights)
+```
+to
+```
+checkpoint = torch.load(args.weights, map_location=torch.device('cpu'))
+```
+
+5.	The something-somethingv2 models seem to be absent, but changing the example command to run the something-something model should work. Also, one of the demo videos seems to be unavailable, but the other should work. 
+
+```
+python test_video.py --arch BNInception --dataset something  --weights pretrain/TRN_something_RGB_BNInception_TRNmultiscale_segment8_best.pth.tar  --video_file sample_data/juggling.mp4
+```
+
+# Running 3D-CNN model on sub-videos
+1. (video file specified on lines 11 and 12 of canvas_test_2.py) To specifiy the region of interest based off of the first frame of the video and perform sub-video label prediction
+```
+python canvas_test_2.py
+```
+2. (video file specified on line 10 of canvas_test_4.py) To specifiy the region of interest while the video is being streamed and perform sub-video label prediction
+
+```
+python canvas_test_4.py
+```
+3. Be careful to only drag from the top left to bottom right, as the dimensions will be incorrectly interpreted if the box is drawn another way. 
+
+
+# Original ReadMe
 # Pretrained models for Moments in Time Dataset
 
 We release the pre-trained models trained on [Moments in Time](http://moments.csail.mit.edu/).
