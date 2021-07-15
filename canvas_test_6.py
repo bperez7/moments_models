@@ -25,8 +25,22 @@ crop_started = False
 
 
 class VideoCropTool:
+
+
     def __init__(self, video_path, output_file, output_folder, video_start_time,
                     capture, output_label, time_window_on = False,time_window=3):
+        """
+
+        Args:
+            video_path:
+            output_file:
+            output_folder:
+            video_start_time:
+            capture:
+            output_label:
+            time_window_on:
+            time_window:
+        """
         self.video_path = video_path
         self.output_file = output_file
         self.output_folder = output_folder
