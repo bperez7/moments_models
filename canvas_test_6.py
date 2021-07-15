@@ -72,16 +72,33 @@ class VideoCropTool:
 
     def click_box(self,event, x,y, flags, param):
 
-       # global start, box_started, end, box_created, final_end
+        """
+        Detects and processes left and right clicks of the mouse on the opencv frame
 
+        Args:
+            event:
+            x:
+            y:
+            flags:
+            param:
+
+        Returns: None
+
+
+        """
+        #Start drawing the box if the left button is clicked
         if event == cv2.EVENT_LBUTTONDOWN:
 
             self.start = (x, y)
-            # global box_started
+
             self.box_started = True
+
+        #Drag the box if the mouse is moving
         elif event == cv2.EVENT_MOUSEMOVE:
 
             self.end = (x, y)
+
+        #Finalize the box if the left button is raised
         elif event == cv2.EVENT_LBUTTONUP:
 
             # global box_created
@@ -114,7 +131,18 @@ class VideoCropTool:
 
 
 
+
     def crop_and_label(self):
+        """
+        - Plays back the selected video in an opencv frame and allows for cropping/time selection
+        - Sorts the cropped video into a folder named after the given label
+
+
+
+        Returns: None
+
+
+        """
 
         while (self.cap.isOpened()):
 
@@ -326,7 +354,16 @@ class VideoCropTool:
 
     def crop_and_predict(self):
 
+        """
+        - Plays back the selected video in an opencv frame and allows for cropping/time selection
+        - Runs the moments in time model and gives the top 5 predictions for the selected segment in the terminal
 
+
+
+        Returns: None
+
+
+        """
         while (self.cap.isOpened()):
 
 
