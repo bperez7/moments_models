@@ -579,12 +579,12 @@ def main():
     TIME_WINDOW = 3  # seconds
 
     #video_file_path = 'videos/whats_app_vid_1.mp4'
-    video_file_path = 'videos/IMG_4884.MOV'
-    output_file = "demo_clip"
-    output_folder = "trimmed_videos"
-    output_label = "tossing"
+    video_file_path = 'videos/ytm8_videos/DELQ.mp4'
+    output_file = "bulldozing_1"
+    output_folder = "label_videos"
+    output_label = "bulldozing"
     result_text = ""
-    video_start_time = 0 # in secs
+    video_start_time = 5# in secs
     fps = 30
     video_start_frame = video_start_time*fps
 
@@ -592,8 +592,8 @@ def main():
     cap.set(cv2.CAP_PROP_POS_FRAMES, video_start_frame)
 
     my_crop_tool = VideoCropTool(video_file_path, output_file, output_folder, 0, cap, output_label)
-    my_crop_tool.crop_and_predict()
-    #my_crop_tool.crop_and_label()
+    #my_crop_tool.crop_and_predict()
+    my_crop_tool.crop_and_label()
 
 if __name__=="__main__":
 
