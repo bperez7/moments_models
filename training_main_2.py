@@ -132,12 +132,12 @@ def main():
     #     num_workers=args.workers, pin_memory=True)
 
     train_loader = torch.utils.data.DataLoader(
-        CustomImageTrainDataset("train_labels.csv", "label_videos"),
+        CustomImageTrainDataset("train_labels.csv", "videos/label_videos"),
         batch_size=2,shuffle=True
     )
 
     val_loader = torch.utils.data.DataLoader(
-        CustomImageValDataset("val_labels.csv", "label_videos")
+        CustomImageValDataset("val_labels.csv", "videos/label_videos")
     )
 
     # val_loader = torch.utils.data.DataLoader(
