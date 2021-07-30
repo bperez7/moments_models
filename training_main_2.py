@@ -25,6 +25,7 @@ import models
 
 from custom_dataset import CustomImageTrainDataset, CustomImageValDataset
 
+loss_list = []
 
 best_prec1 = 0
 
@@ -203,6 +204,12 @@ def main():
             #     'best_prec1': best_prec1,
             # }, is_best)
 
+    #plot loss function
+    global loss_list
+    plt.plot(loss_list)
+    plt.savefig('losses_plot.png')
+
+
 
 def train(train_loader, model, criterion, optimizer, epoch, log):
     batch_time = AverageMeter()
@@ -234,6 +241,8 @@ def train(train_loader, model, criterion, optimizer, epoch, log):
         loss = criterion(output, target_var)
 
         print(loss)
+        global loss_list
+        loss_list.append(losses)
         # print('losses')
         # print(losses)
 
