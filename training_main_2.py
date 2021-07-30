@@ -38,6 +38,7 @@ TODO:
 def main():
     global lr_steps, start_epoch, epochs, eval_freq, lr, momentum, weight_decay, print_freq
 
+
     lr_steps = [50, 100]
     start_epoch = 0
     epochs = 10
@@ -48,6 +49,7 @@ def main():
     print_freq = 1
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
 
     global args, best_prec1
    # args = parser.parse_args()
@@ -87,7 +89,8 @@ def main():
   #   policies = model.base.policies()
    # train_augmentation = model.get_augmentation()
 
-   # model = torch.nn.DataParallel(model, device_ids=args.gpus).cuda()
+    #For GPU parallelization
+    model = torch.nn.DataParallel(model, device_ids=args.gpus).cuda()
 
     # #if args.resume:
     #     if os.path.isfile(args.resume):
@@ -155,8 +158,9 @@ def main():
 
     # define loss function (criterion) and optimizer
     # if args.loss_type == 'nll':
-    #     criterion = torch.nn.CrossEntropyLoss().cuda()
-    criterion = torch.nn.CrossEntropyLoss().to(device)
+    criterion = torch.nn.CrossEntropyLoss().cuda()
+    #criterion = torch.nn.CrossEntropyLoss().to(device)
+
     # else:
     #     raise ValueError("Unknown loss type")
 
@@ -221,7 +225,7 @@ def train(train_loader, model, criterion, optimizer, epoch, log):
         print(target)
         data_time.update(time.time() - end)
 
-       # target = target.cuda(async=True)
+        target = target.cuda(async=True)
         input_var = torch.autograd.Variable(input)
         target_var = torch.autograd.Variable(target)
 
@@ -284,7 +288,7 @@ def validate(val_loader, model, criterion, iter, log):
 
     end = time.time()
     for i, (input, target) in enumerate(val_loader):
-     #  target = target.cuda(async=True)
+        target = target.cuda(async=True)
         input_var = torch.autograd.Variable(input, volatile=True)
         target_var = torch.autograd.Variable(target, volatile=True)
 
