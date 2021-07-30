@@ -90,7 +90,7 @@ def main():
    # train_augmentation = model.get_augmentation()
 
     #For GPU parallelization
-    model = torch.nn.DataParallel(model, device_ids=args.gpus).cuda()
+    model = torch.nn.DataParallel(model, device_ids=[0,1]).cuda()
 
     # #if args.resume:
     #     if os.path.isfile(args.resume):
