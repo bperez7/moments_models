@@ -190,6 +190,8 @@ def main():
 
         # train for one epoch
        training_loss = train(train_loader, model, criterion, optimizer, epoch, log_training)
+       print('training loss')
+       print(training_loss)
        training_loss_list.append(training_loss)
 
         # evaluate on validation set
