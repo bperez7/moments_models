@@ -33,12 +33,14 @@ os.environ['KMP_DUPLICATE_LIB_OK']='True'
 """
 TODO:
 1. Freeze layers 
+2. dimension differnece between TRN 
 
 """
 
 def main():
     global lr_steps, start_epoch, epochs, eval_freq, lr, momentum, weight_decay, print_freq
 
+    training_loss_list = []
 
     lr_steps = [50, 100]
     start_epoch = 0
@@ -187,7 +189,8 @@ def main():
        adjust_learning_rate(optimizer, epoch, lr_steps)
 
         # train for one epoch
-       train(train_loader, model, criterion, optimizer, epoch, log_training)
+       training_loss = train(train_loader, model, criterion, optimizer, epoch, log_training)
+       training_loss_list.append(training_loss)
 
         # evaluate on validation set
        # if (epoch + 1) % args.eval_freq == 0 or epoch == args.epochs - 1:
@@ -205,8 +208,12 @@ def main():
             # }, is_best)
 
     #plot loss function
-    global loss_list
-    plt.plot(loss_list)
+    #global loss_list
+
+    #plt.plot(loss_list)
+    print(training_loss_list)
+    plt.plot(training_loss_list)
+
     plt.savefig('losses_plot.png')
 
 
@@ -241,8 +248,8 @@ def train(train_loader, model, criterion, optimizer, epoch, log):
         loss = criterion(output, target_var)
 
         print(loss)
-        global loss_list
-        loss_list.append(losses)
+        # global loss_list
+        # loss_list.append(losses)
         # print('losses')
         # print(losses)
 
@@ -281,6 +288,7 @@ def train(train_loader, model, criterion, optimizer, epoch, log):
             print(output)
             log.write(output + '\n')
             log.flush()
+        return float(loss)
 
 
 
