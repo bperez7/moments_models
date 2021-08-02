@@ -44,9 +44,9 @@ def main():
 
     lr_steps = [50, 100]
     start_epoch = 0
-    epochs = 50
+    epochs = 100
     eval_freq = 2
-    lr = .01
+    lr = .001
     momentum = .9
     weight_decay=5e-4
     print_freq = 1
