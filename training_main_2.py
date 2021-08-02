@@ -77,9 +77,11 @@ def main():
 
     model = models.load_model("resnet3d50")
 
+
     expansion = 4
     model.fc = torch.nn.Linear(512 * expansion, 306)
     model.last_linear = torch.nn.Linear(in_features=512 * expansion, out_features=num_class, bias=True)
+    print(model)
 
 
 
