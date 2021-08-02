@@ -61,7 +61,7 @@ def main():
     #categories, args.train_list, args.val_list, args.root_path, prefix = datasets_video.return_dataset(args.dataset, args.modality)
    # categories = ?  """TODO: fix categories"""
   #  num_class = len(categories)
-    num_class = 5
+    num_class = 2
 
 
 
@@ -142,7 +142,7 @@ def main():
     )
 
     val_loader = torch.utils.data.DataLoader(
-        CustomImageValDataset("val_labels.csv", "videos/label_videos")
+        CustomImageValDataset("val_labels_xsmall.csv", "videos/label_videos")
     )
 
     # val_loader = torch.utils.data.DataLoader(
