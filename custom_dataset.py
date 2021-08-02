@@ -34,6 +34,8 @@ class CustomImageTrainDataset(Dataset):
         video = torch.stack([self.transform(frame) for frame in frames], 1)
         print('video formatted')
         label = self.vid_labels.iloc[idx, 1]
+        print('label number')
+        print(label)
         #if self.transform:
         #    image = self.transform(image)
 
