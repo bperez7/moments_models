@@ -260,7 +260,7 @@ def train(train_loader, model, criterion, optimizer, epoch, log):
         # print(losses)
 
         # measure accuracy and record loss
-        prec1, prec5 = accuracy(output.data, target, topk=(1,5))
+        prec1, prec5 = accuracy(output.data, target, topk=(1,2))
         losses.update(loss.data, input.size(0))
         top1.update(prec1, input.size(0))
         top5.update(prec5, input.size(0))
@@ -320,7 +320,7 @@ def validate(val_loader, model, criterion, iter, log):
         loss = criterion(output, target_var)
 
         # measure accuracy and record loss
-        prec1, prec5 = accuracy(output.data, target, topk=(1,5))
+        prec1, prec5 = accuracy(output.data, target, topk=(1,2))
 
         losses.update(loss.data, input.size(0))
         top1.update(prec1, input.size(0))
