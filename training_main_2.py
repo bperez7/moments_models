@@ -245,6 +245,8 @@ def train(train_loader, model, criterion, optimizer, epoch, log):
 
         target = target.cuda(async=True)
         input_var = torch.autograd.Variable(input)
+        print('input shape')
+        print(input_var.shape)
         target_var = torch.autograd.Variable(target)
 
         # compute output
