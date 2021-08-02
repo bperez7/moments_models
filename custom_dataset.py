@@ -37,6 +37,8 @@ class CustomImageTrainDataset(Dataset):
 
         if self.target_transform:
             label = self.target_transform(label)
+            #hotfix
+            label = label.to(dtype=torch.long)
         return video, label
 
 class CustomImageValDataset(Dataset):
@@ -63,6 +65,8 @@ class CustomImageValDataset(Dataset):
         #    image = self.transform(image)
         if self.target_transform:
             label = self.target_transform(label)
+            # hotfix
+            label = label.to(dtype=torch.long)
         return video, label
 
 
