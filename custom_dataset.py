@@ -28,8 +28,8 @@ class CustomImageTrainDataset(Dataset):
         num_segments = 8 #may need to adjust
         print('extracting frames')
         print(vid_path)
-        #frames = extract_frames(vid_path, num_segments)
-        frames = extract_frames("videos/label_videos/excavating/excavating_2.mp4")
+        frames = extract_frames(vid_path, num_segments)
+        #frames = extract_frames("videos/label_videos/excavating/excavating_2.mp4")
         #video = torch.stack([self.transform(frame) for frame in frames], 1).unsqueeze(0)
         video = torch.stack([self.transform(frame) for frame in frames], 1)
         print('video formatted')
