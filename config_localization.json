@@ -1,0 +1,23 @@
+{
+
+    "modes": {
+      "trn": false,
+      "multi_label": false
+
+
+    },
+    "file_paths": {
+      "video_file_path": "videos/whats_app_vid_1.mp4",
+      "output_file": "subtracting_1",
+      "output_folder": "trimmed_videos",
+      "output_label": "lifting"
+
+    },
+
+    "parameters": {
+      "video_start_time": 0
+
+    }
+
+
+}

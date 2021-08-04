@@ -2,18 +2,29 @@ import cv2
 import os
 import time
 import subprocess
+import json
+from utils import extract_frames
 #from matplotlib import pyplot as plt
 import numpy as np
+import torch
+import models
+
+from matplotlib import cm
+from PIL import Image
 
 #from test_video import get_predictions_results
 #cam_capture = cv2.VideoCapture(0)
 #cv2.destroyAllWindows()
+from torch.nn import functional as F
 
 """ TODO:
-1. Start video at specified time
-2. Right click to indicate trimming points
-3. Output file name
+1. Currently only able to crop up to a minute 
+2. Add multi label model
+3. experiment with TRN plug and play 
+4. Just count frames instead of time string parsing
 """
+
+
 
 
 frame_time = 10
@@ -28,7 +39,8 @@ class VideoCropTool:
 
 
     def __init__(self, video_path, output_file, output_folder, video_start_time,
-                    capture, output_label, time_window_on = False,time_window=3):
+                    capture, output_label, multi_label=False,trn_mode=False,subtract_background=False,
+                 time_window_on = False,time_window=3):
         """
 
         Args:
@@ -38,6 +50,7 @@ class VideoCropTool:
             video_start_time:
             capture:
             output_label:
+            multi_label:
             time_window_on:
             time_window:
         """
@@ -82,6 +95,16 @@ class VideoCropTool:
         #frame properties
         self.frame_width = 0
         self.frame_height = 0
+
+
+        #multi label
+        self.multi_label=multi_label
+        self.trn = trn_mode
+
+
+        #subtract background
+        self.subtract_background = subtract_background
+        self.subtractor = cv2.createBackgroundSubtractorMOG2(history=100, varThreshold=50, detectShadows=True)
 
 
     def click_box(self,event, x,y, flags, param):
@@ -378,12 +401,19 @@ class VideoCropTool:
 
 
         """
+        #for generating the background subtracted video
+        mask_array = []
+        mask_size = (self.frame_width, self.frame_height)
+        mask_frames = []
+
         while (self.cap.isOpened()):
 
 
 
             # Capture frame-by-frame
             ret, frame = self.cap.read()
+
+
             cv2.namedWindow("Frame")
             cv2.setMouseCallback("Frame", self.click_box)
 
@@ -501,6 +531,13 @@ class VideoCropTool:
                     # Using cv2.circle() method
                     # Draw a circle of red color of thickness -1 px
                     cv2.circle(frame, circle_center_coordinates, radius, circle_color, circle_thickness)
+
+
+                #check if subtracting background
+                if self.subtract_background==True:
+                    mask = self.subtractor.apply(frame)
+                    mask_array.append(mask)
+
                 cv2.imshow('Frame', frame)
 
 
@@ -542,7 +579,23 @@ class VideoCropTool:
                         # video_model_command = "python test_video.py --draw_crop_test.mp4 --arch resnet3d50"
 
                         prediction_time_start = time.time()
-                        os.system("python test_video.py --video_file " + self.output_folder+"/"+self.output_file + ".mp4 " + "--arch resnet3d50")
+
+                        if self.trn:
+                           # subprocess.call(["python", "test_video.py", "--video_file " + self.output_folder + "/" + self.output_file + ".mp4 "+
+                             #         "--arch BNInception " +"--dataset something " +"--weights pretrain/TRN_something_RGB_BNInception_TRNmultiscale_segment8_best.pth.tar"], cwd="TRN-pytorch")
+                            os.chdir("./TRN-pytorch")
+                            os.system("python test_video.py --video_file " + "../"+ self.output_folder + "/" + self.output_file + ".mp4 "
+                                     + "--arch BNInception --dataset something  --weights pretrain/TRN_something_RGB_BNInception_TRNmultiscale_segment8_best.pth.tar")
+
+                        if self.multi_label and not self.trn:
+                            os.system("python test_video.py --video_file " + self.output_folder + "/" + self.output_file + ".mp4 " + "--arch resnet3d50" + " --multi")
+
+                        elif not self.trn:
+                            os.system("python test_video.py --video_file " + self.output_folder + "/" + self.output_file + ".mp4 " + "--arch resnet3d50")
+
+                        os.chdir("/Users/brandonperez/Documents/GitHub/moments_crop/moments_models")
+
+
 
                         prediction_time_end = time.time()
 
@@ -571,29 +624,99 @@ class VideoCropTool:
             else:
                 break
 
-        self.cap.release()
-        cv2.destroyAllWindows()
+
+
+
+
+        # self.cap.release()
+        # cv2.destroyAllWindows()
+        # #generate mask video
+        #
+        # #mask_array = np.array(mask_array)
+        # transform = models.load_transform()
+        # pil_mask_frames = [Image.fromarray(np.uint8(cm.gist_earth(frame)*255)) for frame in mask_array]
+        # #original frames
+        # print(self.output_folder + "/" + self.output_file+".mp4")
+        # original_frames = extract_frames(self.output_folder + "/" + self.output_file+".mp4", 8)
+        # transformed_frames = torch.stack([transform(frame) for frame in original_frames]).unsqueeze(0)
+        # print('pillow size')
+        #
+        # print('size of original')
+        # print(transformed_frames.size())
+        # for frame in pil_mask_frames:
+        #     #print(frame.size)
+        #     pass
+        # mask_video = torch.stack([transform(frame) for frame in pil_mask_frames]).unsqueeze(0)
+        # print('mask size')
+        # print(mask_video.size())
+
+
+        #load model
+        model = models.load_model('resnet3d50')
+
+
+        # Make video prediction
+        # with torch.no_grad():
+        #     logits = model(mask_video)
+        #     h_x = F.softmax(logits, 1).mean(dim=0)
+        #     probs, idx = h_x.sort(0, True)
+
+        # Output the prediction.
+        #video_name = args.frame_folder if args.frame_folder is not None else args.video_file
+        # print('MASK RESULT')
+        # predictions_results=""
+        # categories = models.load_categories('category_momentsv2.txt')
+        # for i in range(0, 5):
+        #     print('{:.3f} -> {}'.format(probs[i], categories[idx[i]]))
+        #     next_result = '{:.3f} -> {}'.format(probs[i], categories[idx[i]])
+        #
+        #     predictions_results += next_result
+        #     predictions_results += '\n'
+
+
+        # mask_out_vid = cv2.VideoWriter('videos/mask_project.avi', cv2.VideoWriter_fourcc('M','J','P','G'), 20, mask_size)
+        # for i in range(len(mask_array)):
+        #     mask_out_vid.write(mask_array[i])
+        # mask_out_vid.release()
 
 
 def main():
+    """Defines tool parameters and runs the localization tool"""
     TIME_WINDOW = 3  # seconds
+    config_file = open('config_localization.json')
+    config = json.load(config_file)
 
-    #video_file_path = 'videos/whats_app_vid_1.mp4'
-    video_file_path = 'videos/ytm8_videos/DELQ.mp4'
-    output_file = "bulldozing_1"
-    output_folder = "label_videos"
-    output_label = "bulldozing"
-    result_text = ""
-    video_start_time = 5# in secs
-    fps = 30
-    video_start_frame = video_start_time*fps
+    file_paths = config["file_paths"]
+    video_file_path = file_paths["video_file_path"]
+    output_file = file_paths["output_file"]
+    output_folder = file_paths["output_folder"]
+    output_label = file_paths["output_label"]
+
+    modes = config["modes"]
+    TRN_mode = modes["trn"]
+    multi_mode = modes["multi_label"]
+
+    parameters = config["parameters"]
+    video_start_time = parameters["video_start_time"]
+
+
+    #video_file_path = 'videos/yt8m_video_library/constructions/group_10/hJkY.mp4'
+
+   # output_folder = "label_videos"
+
+
+
+    multi_label = False
 
     cap = cv2.VideoCapture(video_file_path)
+    fps = cap.get(cv2.CAP_PROP_FPS)
+    video_start_frame = video_start_time * fps
     cap.set(cv2.CAP_PROP_POS_FRAMES, video_start_frame)
 
-    my_crop_tool = VideoCropTool(video_file_path, output_file, output_folder, 0, cap, output_label)
-    #my_crop_tool.crop_and_predict()
-    my_crop_tool.crop_and_label()
+    my_crop_tool = VideoCropTool(video_file_path, output_file, output_folder, 0, cap, output_label,
+                                 trn_mode=TRN_mode,multi_label=multi_mode,subtract_background=False)
+    my_crop_tool.crop_and_predict()
+    #my_crop_tool.crop_and_label()
 
 if __name__=="__main__":
 
