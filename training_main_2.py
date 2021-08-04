@@ -225,7 +225,7 @@ def main():
     test_input_file = "videos/label_videos/excavating/excavating_1.mp4"
     test_input_frames = extract_frames(test_input_file, 8)
     transform = models.load_transform()
-    test_input =  torch.stack([transform(frame) for frame in test_input_frames], 1)
+    test_input =  torch.stack([transform(frame) for frame in test_input_frames], 1).unsqueeze(0)
     for i in range(10):
         test_output = model(test_input)
 
