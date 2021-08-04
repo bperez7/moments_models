@@ -65,6 +65,7 @@ def main():
     momentum = hyperparameters["momentum"]
     weight_decay = hyperparameters["weight_decay"]
     print_freq = hyperparameters["print_freq"]
+    eval_freq = hyperparameters["eval_freq"]
 
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")

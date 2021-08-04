@@ -6,7 +6,8 @@
         "start_epoch": 0,
         "momentum": 0.9,
         "weight_decay": 5e-4,
-        "print_freq": 1
+        "print_freq": 1,
+        "eval_freq": 2
 
     },
 
