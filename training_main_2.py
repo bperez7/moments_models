@@ -46,7 +46,7 @@ def main():
 
     lr_steps = [50, 100]
     start_epoch = 0
-    epochs = 2
+    epochs = 20
     eval_freq = 2
     lr = .001
     momentum = .9
