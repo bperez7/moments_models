@@ -8,6 +8,8 @@ import torch.nn.parallel
 import torch.backends.cudnn as cudnn
 import torch.optim
 from torch.nn.utils import clip_grad_norm
+from utils import extract_frames
+
 
 # from dataset import TSNDataSet
 # from models import TSN
@@ -44,7 +46,7 @@ def main():
 
     lr_steps = [50, 100]
     start_epoch = 0
-    epochs = 100
+    epochs = 2
     eval_freq = 2
     lr = .001
     momentum = .9
@@ -81,7 +83,7 @@ def main():
     expansion = 4
     model.fc = torch.nn.Linear(512 * expansion, 306)
     model.last_linear = torch.nn.Linear(in_features=512 * expansion, out_features=num_class, bias=True)
-    print(model)
+   # print(model)
 
 
 
@@ -192,8 +194,8 @@ def main():
 
         # train for one epoch
        training_loss = train(train_loader, model, criterion, optimizer, epoch, log_training)
-       print('training loss')
-       print(training_loss)
+     #  print('training loss')
+     #  print(training_loss)
        training_loss_list.append(training_loss)
 
         # evaluate on validation set
@@ -218,6 +220,14 @@ def main():
     print(training_loss_list)
     plt.plot(training_loss_list)
 
+    #test on training data
+    test_input_file = "videos/label_videos/excavating/excavating_1.mp4"
+    test_input_frames = extract_frames(test_input_file, 8)
+    test_input =  torch.stack([models.transform(frame) for frame in test_input_frames], 1)
+    for i in range(10):
+        test_output = model(test_input)
+
+
     plt.savefig('losses_plot.png')
 
 
@@ -240,20 +250,19 @@ def train(train_loader, model, criterion, optimizer, epoch, log):
     end = time.time()
     for i, (input, target) in enumerate(train_loader):
         # measure data loading time
-        print(target)
+
         data_time.update(time.time() - end)
 
         target = target.cuda(async=True)
         input_var = torch.autograd.Variable(input)
-        print('input shape')
-        print(input_var.shape)
+
         target_var = torch.autograd.Variable(target)
 
         # compute output
         output = model(input_var)
         loss = criterion(output, target_var)
 
-        print(loss)
+       # print(loss)
         # global loss_list
         # loss_list.append(losses)
         # print('losses')
@@ -344,9 +353,9 @@ def validate(val_loader, model, criterion, iter, log):
 
     output = ('Testing Results: Prec@1 {top1.avg:.3f} Prec@5 {top5.avg:.3f} Loss {loss.avg:.5f}'
           .format(top1=top1, top5=top5, loss=losses))
-    print(output)
+   # print(output)
     output_best = '\nBest Prec@1: %.3f'%(best_prec1)
-    print(output_best)
+   # print(output_best)
     log.write(output + ' ' + output_best + '\n')
     log.flush()
 
