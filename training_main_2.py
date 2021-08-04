@@ -46,7 +46,7 @@ def main():
 
     lr_steps = [50, 100]
     start_epoch = 0
-    epochs = 20
+    epochs = 10
     eval_freq = 2
     lr = .001
     momentum = .9
@@ -231,6 +231,13 @@ def main():
     for i in range(10):
         test_output = model(test_input)
         print(test_output)
+        #prec1, prec5 = accuracy(test_output.data, target, topk=(1, 2))
+       # maxk=(1,2)
+        maxk=2
+        _, pred = test_output.topk(maxk)
+        pred = pred.t()
+        print(_)
+        print(pred)
 
 
     plt.savefig('losses_plot.png')
