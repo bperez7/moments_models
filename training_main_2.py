@@ -243,7 +243,7 @@ def train(train_loader, model, criterion, optimizer, epoch, log):
         print(target)
         data_time.update(time.time() - end)
 
-       #target = target.cuda(async=True)
+        target = target.cuda(async=True)
         input_var = torch.autograd.Variable(input)
         print('input shape')
         print(input_var.shape)
