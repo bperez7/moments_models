@@ -60,6 +60,7 @@ def main():
     hyperparameters = config["hyperparameters"]
     lr_steps = hyperparameters['lr_steps']
     start_epoch = hyperparameters["start_epoch"]
+    epochs = hyperparameters["epochs"]
     lr = .001
     momentum = hyperparameters["momentum"]
     weight_decay = hyperparameters["weight_decay"]
