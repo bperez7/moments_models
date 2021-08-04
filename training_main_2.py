@@ -190,6 +190,7 @@ def main():
     # log_training = open(os.path.join(args.root_log, '%s.csv' % args.store_name), 'w')
     #for epoch in range(args.start_epoch, args.epochs):
     for epoch in range(start_epoch, epochs):
+       print('epoch: ' + str(epoch))
        # adjust_learning_rate(optimizer, epoch, args.lr_steps)
        adjust_learning_rate(optimizer, epoch, lr_steps)
 
@@ -228,6 +229,7 @@ def main():
     test_input =  torch.stack([transform(frame) for frame in test_input_frames], 1).unsqueeze(0)
     for i in range(10):
         test_output = model(test_input)
+        print(test_output)
 
 
     plt.savefig('losses_plot.png')
