@@ -70,6 +70,7 @@ def main():
    # args.store_name = '_'.join(['TRN', args.dataset, args.modality, args.arch, args.consensus_type, 'segment%d'% args.num_segments])
     #print('storing name: ' + args.store_name)
 
+
     # model = TSN(num_class, args.num_segments, args.modality,
     #             base_model=args.arch,
     #             consensus_type=args.consensus_type,
@@ -300,7 +301,7 @@ def train(train_loader, model, criterion, optimizer, epoch, log):
                     'Prec@5 {top5.val:.3f} ({top5.avg:.3f})'.format(
                         epoch, i, len(train_loader), batch_time=batch_time,
                         data_time=data_time, loss=losses, top1=top1, top5=top5, lr=optimizer.param_groups[-1]['lr']))
-            print(output)
+            #print(output)
             log.write(output + '\n')
             log.flush()
         return float(loss)
@@ -347,7 +348,7 @@ def validate(val_loader, model, criterion, iter, log):
                   'Prec@5 {top5.val:.3f} ({top5.avg:.3f})'.format(
                    i, len(val_loader), batch_time=batch_time, loss=losses,
                    top1=top1, top5=top5))
-            print(output)
+           # print(output)
             log.write(output + '\n')
             log.flush()
 
@@ -402,11 +403,11 @@ def accuracy(output, target, topk=(1,)):
     maxk = max(topk)
     batch_size = target.size(0)
 
-    print('max k: '+str(maxk))
+  #  print('max k: '+str(maxk))
     _, pred = output.topk(maxk)
     pred = pred.t()
-    print(target)
-    print(pred)
+  #  print(target)
+  #  print(pred)
 
     correct = pred.eq(target.view(1, -1).expand_as(pred))
 
