@@ -1,0 +1,18 @@
+{
+    "hyperparameters": {
+        "lr": 0.001,
+        "lr_steps": [50,100],
+        "epochs": 10,
+        "start_epoch": 0
+        "momentum": 0.9,
+        "weight_decay": 5e-4,
+        "print_freq": 1
+
+    },
+
+    "datasets": {
+        "training_csv": "train_labels_xsmall.csv",
+        "val_csv": "val_labels_xsmall.csv",
+        "videos_path": "videos/label_videos"
+    }
+}

@@ -3,6 +3,7 @@ import os
 import time
 import shutil
 import torch
+import json
 import torchvision
 import torch.nn.parallel
 import torch.backends.cudnn as cudnn
@@ -44,14 +45,26 @@ def main():
 
     training_loss_list = []
 
-    lr_steps = [50, 100]
-    start_epoch = 0
-    epochs = 10
-    eval_freq = 2
+    # lr_steps = [50, 100]
+    # start_epoch = 0
+    # epochs = 10
+    # eval_freq = 2
+    # lr = .001
+    # momentum = .9
+    # weight_decay=5e-4
+    # print_freq = 1
+
+    config_file = open('config_file.json')
+    config = json.load(config_file)
+
+    hyperparameters = config["hyperparameters"]
+    lr_steps = hyperparameters['lr_steps']
+    start_epoch = hyperparameters["start_epoch"]
     lr = .001
-    momentum = .9
-    weight_decay=5e-4
-    print_freq = 1
+    momentum = hyperparameters["momentum"]
+    weight_decay = hyperparameters["weight_decay"]
+    print_freq = hyperparameters["print_freq"]
+
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -139,13 +152,17 @@ def main():
     #     batch_size=args.batch_size, shuffle=True,
     #     num_workers=args.workers, pin_memory=True)
 
+    train_csv_path = config["datasets"]["training_csv"]
+    val_csv_path = config["datasets"]["val_csv"]
+    videos_path = config["datasets"]["videos_path"]
+
     train_loader = torch.utils.data.DataLoader(
-        CustomImageTrainDataset("train_labels_xsmall.csv", "videos/label_videos"),
+        CustomImageTrainDataset(train_csv_path, videos_path),
         batch_size=2,shuffle=True
     )
 
     val_loader = torch.utils.data.DataLoader(
-        CustomImageValDataset("val_labels_xsmall.csv", "videos/label_videos")
+        CustomImageValDataset(val_csv_path, videos_path)
     )
 
     # val_loader = torch.utils.data.DataLoader(
