@@ -28,16 +28,13 @@ python test_video.py --arch BNInception --dataset something  --weights pretrain/
 ```
 
 # Running 3D-CNN model on sub-videos
-1. (video file specified on lines 11 and 12 of canvas_test_2.py) To specifiy the region of interest based off of the first frame of the video and perform sub-video label prediction
-```
-python canvas_test_2.py
-```
-2. To specifiy the region of interest while the video is being streamed and perform sub-video label prediction. Parameters can be edited at the bottom of the file. 
+
+1. To specifiy the region of interest while the video is being streamed and perform sub-video label prediction. Parameters can be edited at the bottom of the file. 
 
 ```
 python localization_tool.py
 ```
-3. Be careful to only drag from the top left to bottom right, as the dimensions will be incorrectly interpreted if the box is drawn another way. 
+2. Be careful to only drag from the top left to bottom right, as the dimensions will be incorrectly interpreted if the box is drawn another way. 
 
 
 # Original ReadMe
