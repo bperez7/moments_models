@@ -67,6 +67,8 @@ def main():
     print_freq = hyperparameters["print_freq"]
     eval_freq = hyperparameters["eval_freq"]
 
+    num_class = hyperparameters["num_classes"]
+
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -78,7 +80,7 @@ def main():
     #categories, args.train_list, args.val_list, args.root_path, prefix = datasets_video.return_dataset(args.dataset, args.modality)
    # categories = ?  """TODO: fix categories"""
   #  num_class = len(categories)
-    num_class = 2
+  #  num_class = 2
 
 
 
