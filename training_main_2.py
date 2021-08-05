@@ -375,8 +375,10 @@ def validate(val_loader, model, criterion, iter, log):
     end = time.time()
     for i, (input, target) in enumerate(val_loader):
         target = target.cuda(async=True)
-        input_var = torch.autograd.Variable(input, volatile=True)
-        target_var = torch.autograd.Variable(target, volatile=True)
+     #   input_var = torch.autograd.Variable(input, volatile=True)
+        input_var = torch.no_grad(input)
+        target_var = torch.no_grad(input)
+       # target_var = torch.autograd.Variable(target, volatile=True)
 
         # compute output
         output = model(input_var)
@@ -444,7 +446,9 @@ def adjust_learning_rate(optimizer, epoch, lr_steps):
     """Sets the learning rate to the initial LR decayed by 10 every 30 epochs"""
     global lr, weight_decay
     decay = 0.1 ** (sum(epoch >= np.array(lr_steps)))
-    lr = lr * decay
+    """TODO: Should I decay? """
+    lr = lr
+    #lr = lr * decay
     decay = weight_decay
     # for param_group in optimizer.param_groups:
     #     param_group['lr'] = lr * param_group['lr_mult']x
@@ -477,7 +481,6 @@ def check_rootfolders():
         if not os.path.exists(folder):
             print('creating folder ' + folder)
             os.mkdir(folder)
-
 
 if __name__ == '__main__':
     main()
