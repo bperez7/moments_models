@@ -14,8 +14,8 @@
     },
 
     "datasets": {
-        "training_csv": "train_labels_xsmall.csv",
-        "val_csv": "val_labels_xsmall.csv",
+        "training_csv": "dataset/train_labels_xsmall.csv",
+        "val_csv": "dataset/val_labels_xsmall.csv",
         "videos_path": "videos/label_videos",
 
         "debug_video": "videos/label_videos/excavating/excavating_1.mp4"
