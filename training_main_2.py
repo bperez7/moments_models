@@ -197,10 +197,17 @@ def main():
     #     print(('group: {} has {} params, lr_mult: {}, decay_mult: {}'.format(
     #         group['name'], len(group['params']), group['lr_mult'], group['decay_mult'])))
 
-    optimizer = torch.optim.SGD(model.parameters(),
-                                lr,
-                                momentum=momentum,
-                                weight_decay=weight_decay)
+    optimizer_name = hyperparameters["optimizer"]
+    if optimizer_name=="adam":
+        optimizer = torch.optim.Adam(model.parameters(),lr=lr)
+    elif optimizer_name=="sgd":
+        optimizer = torch.optim.SGD(model.parameters(),
+                                    lr=lr
+                                    # momentum=momentum,
+                                    # weight_decay=weight_decay
+                                    )
+
+
 
 
     # if args.evaluate:
