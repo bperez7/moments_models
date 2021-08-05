@@ -37,7 +37,7 @@ python localization_tool.py
 2. Be careful to only drag from the top left to bottom right, as the dimensions will be incorrectly interpreted if the box is drawn another way. 
 
 
-#Finetuning 3D-CNN model on new data
+# Finetuning 3D-CNN model on new data
 
 1. Decide hyperparameters and specify which video csv files are going to be used by fixing the path in configs/config_file.json
 2. Run the training file
