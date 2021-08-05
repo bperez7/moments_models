@@ -1,13 +1,13 @@
 # Modified Steps!
 
 1.	The existing Moments in Time model repository can be found at       https://github.com/zhoubolei/moments_models#models
-2.	The repo’s documentation is sparse, so be sure that your environment is configured to meet the following requirements (flexible just means newest version works fine)
+2.	The repo’s documentation is sparse, so be sure that your environment is configured to meet the following requirements  
 - 	Python=3.6.13
 - 	Pytorch=1.6.0, torchvision=0.7.0, cudatoolkit=10.1
--	Cv2=3.4.2 (flexible)
--	Moviepy=1.0.1 (flexible)
--	Ffmpeg (flexible)
--	Pyyaml (flexible)
+-	Cv2=3.4.2 (latest is fine)
+-	Moviepy=1.0.1 (latest)
+-	Ffmpeg (latest)
+-	Pyyaml (latest)
 3. You should be able to run the 3D CNN model with the original repo's commands if these requirements are met.
 4.	In order to run the TRN models, a couple of corrective steps have to be taken
 -	Comment out line 35 of the pytorch_load.py file of the BNInception model according to this issue https://github.com/zhoubolei/TRN-pytorch/issues/10
@@ -36,6 +36,14 @@ python localization_tool.py
 ```
 2. Be careful to only drag from the top left to bottom right, as the dimensions will be incorrectly interpreted if the box is drawn another way. 
 
+
+#Finetuning 3D-CNN model on new data
+
+1. Decide hyperparameters and specify which video csv files are going to be used by fixing the path in configs/config_file.json
+2. Run the training file
+```
+python training_main_tune.py
+```
 
 # Original ReadMe
 # Pretrained models for Moments in Time Dataset
