@@ -317,6 +317,7 @@ def train(train_loader, model, criterion, optimizer, epoch, log):
         # compute output
         output = model(input_var)
         loss = criterion(output, target_var)
+        print(loss)
 
        # print(loss)
         # global loss_list
