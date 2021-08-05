@@ -61,7 +61,7 @@ def main():
     lr_steps = hyperparameters['lr_steps']
     start_epoch = hyperparameters["start_epoch"]
     epochs = hyperparameters["epochs"]
-    lr = .001
+    lr = hyperparameters["lr"]
     momentum = hyperparameters["momentum"]
     weight_decay = hyperparameters["weight_decay"]
     print_freq = hyperparameters["print_freq"]
@@ -261,6 +261,7 @@ def main():
         transform = models.load_transform()
         test_input =  torch.stack([transform(frame) for frame in test_input_frames], 1).unsqueeze(0)
         test_output = model(test_input)
+        print(test_input_file)
         print(test_output)
         # prec1, prec5 = accuracy(test_output.data, target, topk=(1, 2))
         # maxk=(1,2)
