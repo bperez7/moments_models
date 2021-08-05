@@ -246,7 +246,7 @@ def main():
     #test on training data
     #test_input_file = "videos/label_videos/excavating/excavating_1.mp4"
     #test_input_file = "videos/label_videos/lowering/lowering_1.mp4"
-    test_input_file = config["datasets"]
+    test_input_file = config["datasets"]["debug_video"]
 
     test_input_frames = extract_frames(test_input_file, 8)
     transform = models.load_transform()
