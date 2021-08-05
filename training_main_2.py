@@ -247,20 +247,38 @@ def main():
     #test_input_file = "videos/label_videos/excavating/excavating_1.mp4"
     #test_input_file = "videos/label_videos/lowering/lowering_1.mp4"
     test_input_file = config["datasets"]["debug_video"]
+    all_test_input_files = ["videos/label_videos/lowering/lowering_1.mp4",
+                            "videos/label_videos/lowering/lowering_2.mp4",
+                            "videos/label_videos/excavating/excavating_1.mp4",
+                            "videos/label_videos/excavating/excavating_6.mp4",
+                            "videos/label_videos/bulldozing/bulldozing_2.mp4",
+                            "videos/label_videos/bulldozing/bulldozing_3.mp4"
 
-    test_input_frames = extract_frames(test_input_file, 8)
-    transform = models.load_transform()
-    test_input =  torch.stack([transform(frame) for frame in test_input_frames], 1).unsqueeze(0)
-    for i in range(10):
+                            ]
+
+    for test_input_file in all_test_input_files:
+        test_input_frames = extract_frames(test_input_file, 8)
+        transform = models.load_transform()
+        test_input =  torch.stack([transform(frame) for frame in test_input_frames], 1).unsqueeze(0)
         test_output = model(test_input)
         print(test_output)
-        #prec1, prec5 = accuracy(test_output.data, target, topk=(1, 2))
-       # maxk=(1,2)
-        maxk=2
+        # prec1, prec5 = accuracy(test_output.data, target, topk=(1, 2))
+        # maxk=(1,2)
+        maxk = 2
         _, pred = test_output.topk(maxk)
         pred = pred.t()
         print(_)
         print(pred)
+    # for i in range(10):
+    #     test_output = model(test_input)
+    #     print(test_output)
+    #     #prec1, prec5 = accuracy(test_output.data, target, topk=(1, 2))
+    #    # maxk=(1,2)
+    #     maxk=2
+    #     _, pred = test_output.topk(maxk)
+    #     pred = pred.t()
+    #     print(_)
+    #     print(pred)
 
 
     plt.savefig('losses_plot.png')
