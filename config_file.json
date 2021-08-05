@@ -1,8 +1,8 @@
 {
     "hyperparameters": {
-        "lr": 0.1,
+        "lr": 0.005,
         "lr_steps": [50,100],
-        "epochs": 30,
+        "epochs": 100,
         "start_epoch": 0,
         "momentum": 0.9,
         "weight_decay": 5e-4,
@@ -19,6 +19,10 @@
         "videos_path": "videos/label_videos",
 
         "debug_video": "videos/label_videos/excavating/excavating_1.mp4"
+
+    },
+    "misc": {
+        "topk": 3
 
     }
 }

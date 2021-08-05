@@ -83,36 +83,16 @@ def main():
   #  num_class = 2
 
 
-
-   # args.store_name = '_'.join(['TRN', args.dataset, args.modality, args.arch, args.consensus_type, 'segment%d'% args.num_segments])
-    #print('storing name: ' + args.store_name)
-
-
-    # model = TSN(num_class, args.num_segments, args.modality,
-    #             base_model=args.arch,
-    #             consensus_type=args.consensus_type,
-    #             dropout=args.dropout,
-    #             img_feature_dim=args.img_feature_dim,
-    #             partial_bn=not args.no_partialbn)
-
+    #Load resnet pretrained model
     model = models.load_model("resnet3d50")
 
 
+    #add layers to specify number of classes
     expansion = 4
     model.fc = torch.nn.Linear(512 * expansion, 306)
     model.last_linear = torch.nn.Linear(in_features=512 * expansion, out_features=num_class, bias=True)
    # print(model)
 
-
-
-
-    # crop_size = model.crop_size
-    # scale_size = model.scale_size
-    # input_mean = model.input_mean
-    # input_std = model.input_std
-  #  policies = model.get_optim_policies()
-  #   policies = model.base.policies()
-   # train_augmentation = model.get_augmentation()
 
     #For GPU parallelization
     model = torch.nn.DataParallel(model, device_ids=[0,1]).cuda()
@@ -131,7 +111,7 @@ def main():
 
     cudnn.benchmark = True
 
-    # # Data loading code
+    # # Data loading code (for TRN)
     # if args.modality != 'RGBDiff':
     #     normalize = GroupNormalize(input_mean, input_std)
     # else:
@@ -142,19 +122,7 @@ def main():
     # elif args.modality in ['Flow', 'RGBDiff']:
     #     data_length = 5
 
-    # train_loader = torch.utils.data.DataLoader(
-    #     TSNDataSet(args.root_path, args.train_list, num_segments=args.num_segments,
-    #                new_length=data_length,
-    #                modality=args.modality,
-    #                image_tmpl=prefix,
-    #                transform=torchvision.transforms.Compose([
-    #                    train_augmentation,
-    #                    Stack(roll=(args.arch in ['BNInception','InceptionV3'])),
-    #                    ToTorchFormatTensor(div=(args.arch not in ['BNInception','InceptionV3'])),
-    #                    normalize,
-    #                ])),
-    #     batch_size=args.batch_size, shuffle=True,
-    #     num_workers=args.workers, pin_memory=True)
+
 
     train_csv_path = config["datasets"]["training_csv"]
     val_csv_path = config["datasets"]["val_csv"]
@@ -169,33 +137,13 @@ def main():
         CustomImageValDataset(val_csv_path, videos_path)
     )
 
-    # val_loader = torch.utils.data.DataLoader(
-    #     TSNDataSet(args.root_path, args.val_list, num_segments=args.num_segments,
-    #                new_length=data_length,
-    #                modality=args.modality,
-    #                image_tmpl=prefix,
-    #                random_shift=False,
-    #                transform=torchvision.transforms.Compose([
-    #                    GroupScale(int(scale_size)),
-    #                    GroupCenterCrop(crop_size),
-    #                    Stack(roll=(args.arch in ['BNInception','InceptionV3'])),
-    #                    ToTorchFormatTensor(div=(args.arch not in ['BNInception','InceptionV3'])),
-    #                    normalize,
-    #                ])),
-    #     batch_size=args.batch_size, shuffle=False,
-    #     num_workers=args.workers, pin_memory=True)
 
     # define loss function (criterion) and optimizer
     # if args.loss_type == 'nll':
     criterion = torch.nn.CrossEntropyLoss().cuda()
     #criterion = torch.nn.CrossEntropyLoss().to(device)
 
-    # else:
-    #     raise ValueError("Unknown loss type")
 
-    # for group in policies:
-    #     print(('group: {} has {} params, lr_mult: {}, decay_mult: {}'.format(
-    #         group['name'], len(group['params']), group['lr_mult'], group['decay_mult'])))
 
     optimizer_name = hyperparameters["optimizer"]
     if optimizer_name=="adam":
@@ -208,28 +156,22 @@ def main():
                                     )
 
 
-
-
-    # if args.evaluate:
-    #     validate(val_loader, model, criterion, 0)
-    #     return
-
     log_training = open("log_training",'w')
     # log_training = open(os.path.join(args.root_log, '%s.csv' % args.store_name), 'w')
-    #for epoch in range(args.start_epoch, args.epochs):
+
     for epoch in range(start_epoch, epochs):
        print('epoch: ' + str(epoch))
+
+       """Temporarily removed adaptive learning rate"""
        # adjust_learning_rate(optimizer, epoch, args.lr_steps)
        adjust_learning_rate(optimizer, epoch, lr_steps)
 
         # train for one epoch
        training_loss = train(train_loader, model, criterion, optimizer, epoch, log_training)
-     #  print('training loss')
-     #  print(training_loss)
        training_loss_list.append(training_loss)
 
         # evaluate on validation set
-       # if (epoch + 1) % args.eval_freq == 0 or epoch == args.epochs - 1:
+
        if ((epoch+1)% eval_freq==0 or epoch == epochs-1):
             prec1 = validate(val_loader, model, criterion, (epoch + 1) * len(train_loader), log_training)
 
@@ -243,10 +185,8 @@ def main():
             #     'best_prec1': best_prec1,
             # }, is_best)
 
-    #plot loss function
-    #global loss_list
 
-    #plt.plot(loss_list)
+    print("Losses per epoch: ")
     print(training_loss_list)
     plt.plot(training_loss_list)
 
@@ -298,15 +238,15 @@ def train(train_loader, model, criterion, optimizer, epoch, log):
     data_time = AverageMeter()
     losses = AverageMeter()
     top1 = AverageMeter()
-    top5 = AverageMeter()
-    #
-    # if args.no_partialbn:
-    #     model.module.partialBN(False)
-    # else:
-    #     model.module.partialBN(True)
+    topK = AverageMeter()
 
     # switch to train mode
     model.train()
+
+    #top k config
+    config_file = open('config_file.json')
+    config = json.load(config_file)
+    max_k = config["misc"]["topk"]
 
     end = time.time()
     for i, (input, target) in enumerate(train_loader):
@@ -326,28 +266,18 @@ def train(train_loader, model, criterion, optimizer, epoch, log):
         loss = criterion(output, target_var)
         print(loss)
 
-       # print(loss)
-        # global loss_list
-        # loss_list.append(losses)
-        # print('losses')
-        # print(losses)
 
         # measure accuracy and record loss
-        prec1, prec5 = accuracy(output.data, target, topk=(1,2))
+        prec1, prec_k = accuracy(output.data, target, topk=(1,max_k))
         losses.update(loss.data, input.size(0))
         top1.update(prec1, input.size(0))
-        top5.update(prec5, input.size(0))
+        topK.update(prec_k, input.size(0))
 
 
         # compute gradient and do SGD step
         optimizer.zero_grad()
 
         loss.backward()
-
-        # if args.clip_gradient is not None:
-        #     total_norm = clip_grad_norm(model.parameters(), args.clip_gradient)
-        #     if total_norm > args.clip_gradient:
-        #         print("clipping gradient: {} with coef {}".format(total_norm, args.clip_gradient / total_norm))
 
         optimizer.step()
 
@@ -356,15 +286,16 @@ def train(train_loader, model, criterion, optimizer, epoch, log):
         end = time.time()
 
         if i % print_freq == 0:
+
             output = ('Epoch: [{0}][{1}/{2}], lr: {lr:.5f}\t'
                     'Time {batch_time.val:.3f} ({batch_time.avg:.3f})\t'
                     'Data {data_time.val:.3f} ({data_time.avg:.3f})\t'
                     'Loss {loss.val:.4f} ({loss.avg:.4f})\t'
                     'Prec@1 {top1.val:.3f} ({top1.avg:.3f})\t'
-                    'Prec@5 {top5.val:.3f} ({top5.avg:.3f})'.format(
+                    'Prec@K {topK.val:.3f} ({topK.avg:.3f})'.format(
                         epoch, i, len(train_loader), batch_time=batch_time,
-                        data_time=data_time, loss=losses, top1=top1, top5=top5, lr=optimizer.param_groups[-1]['lr']))
-            #print(output)
+                        data_time=data_time, loss=losses, top1=top1, topK=topK, lr=optimizer.param_groups[-1]['lr']))
+            print(output)
             log.write(output + '\n')
             log.flush()
         return float(loss)
@@ -377,10 +308,15 @@ def validate(val_loader, model, criterion, iter, log):
     batch_time = AverageMeter()
     losses = AverageMeter()
     top1 = AverageMeter()
-    top5 = AverageMeter()
+    topK = AverageMeter()
 
     # switch to evaluate mode
     model.eval()
+
+    #max k config
+    config_file = open('config_file.json')
+    config = json.load(config_file)
+    max_k = config["misc"]["topk"]
 
     end = time.time()
     for i, (input, target) in enumerate(val_loader):
@@ -396,11 +332,11 @@ def validate(val_loader, model, criterion, iter, log):
         loss = criterion(output, target_var)
 
         # measure accuracy and record loss
-        prec1, prec5 = accuracy(output.data, target, topk=(1,2))
+        prec1, prec_k = accuracy(output.data, target, topk=(1,max_k))
 
         losses.update(loss.data, input.size(0))
         top1.update(prec1, input.size(0))
-        top5.update(prec5, input.size(0))
+        topK.update(prec_k, input.size(0))
 
         # measure elapsed time
         batch_time.update(time.time() - end)
@@ -411,18 +347,18 @@ def validate(val_loader, model, criterion, iter, log):
                   'Time {batch_time.val:.3f} ({batch_time.avg:.3f})\t'
                   'Loss {loss.val:.4f} ({loss.avg:.4f})\t'
                   'Prec@1 {top1.val:.3f} ({top1.avg:.3f})\t'
-                  'Prec@5 {top5.val:.3f} ({top5.avg:.3f})'.format(
+                  'Prec@K {topK.val:.3f} ({topK.avg:.3f})'.format(
                    i, len(val_loader), batch_time=batch_time, loss=losses,
-                   top1=top1, top5=top5))
-           # print(output)
+                   top1=top1, topK=topK))
+            print(output)
             log.write(output + '\n')
             log.flush()
 
-    output = ('Testing Results: Prec@1 {top1.avg:.3f} Prec@5 {top5.avg:.3f} Loss {loss.avg:.5f}'
-          .format(top1=top1, top5=top5, loss=losses))
-   # print(output)
+    output = ('Testing Results: Prec@1 {top1.avg:.3f} Prec@5 {topK.avg:.3f} Loss {loss.avg:.5f}'
+          .format(top1=top1, topK=topK, loss=losses))
+    print(output)
     output_best = '\nBest Prec@1: %.3f'%(best_prec1)
-   # print(output_best)
+    print(output_best)
     log.write(output + ' ' + output_best + '\n')
     log.flush()
 
