@@ -15,7 +15,7 @@
     "datasets": {
         "training_csv": "train_labels_xsmall.csv",
         "val_csv": "val_labels_xsmall.csv",
-        "videos_path": "videos/label_videos",
+        "videos_path": "videos/label_videos"
 
     }
 }
