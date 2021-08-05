@@ -54,7 +54,7 @@ def main():
     # weight_decay=5e-4
     # print_freq = 1
 
-    config_file = open('config_file.json')
+    config_file = open('./configs/config_file.json')
     config = json.load(config_file)
 
     hyperparameters = config["hyperparameters"]
@@ -244,7 +244,7 @@ def train(train_loader, model, criterion, optimizer, epoch, log):
     model.train()
 
     #top k config
-    config_file = open('config_file.json')
+    config_file = open('./configs/config_file.json')
     config = json.load(config_file)
     max_k = config["misc"]["topk"]
 
@@ -314,7 +314,7 @@ def validate(val_loader, model, criterion, iter, log):
     model.eval()
 
     #max k config
-    config_file = open('config_file.json')
+    config_file = open('./configs/config_file.json')
     config = json.load(config_file)
     max_k = config["misc"]["topk"]
 
