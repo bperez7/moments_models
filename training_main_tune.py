@@ -37,7 +37,7 @@ os.environ['KMP_DUPLICATE_LIB_OK']='True'
 TODO:
 1. Freeze layers 
 2. dimension differnece between TRN 
-
+3. Could need to fix format of videos to be recognized by ffmpeg (see localization error an label_videos)
 """
 
 def main():
@@ -200,7 +200,6 @@ def main():
                             "videos/label_videos/excavating/excavating_6.mp4",
                             "videos/label_videos/bulldozing/bulldozing_2.mp4",
                             "videos/label_videos/bulldozing/bulldozing_3.mp4"
-
                             ]
 
     for test_input_file in all_test_input_files:
