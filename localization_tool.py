@@ -8,20 +8,24 @@ from utils import extract_frames
 import numpy as np
 import torch
 import models
+from tsm_model import TemporalShift
 
 from matplotlib import cm
 from PIL import Image
+
 
 #from test_video import get_predictions_results
 #cam_capture = cv2.VideoCapture(0)
 #cv2.destroyAllWindows()
 from torch.nn import functional as F
 
-""" TODO:
+""" TODO: 
 1. Currently only able to crop up to a minute 
-2. Add multi label model
-3. experiment with TRN plug and play 
-4. Just count frames instead of time string parsing
+2. Just count frames instead of time string parsing
+3. Directory hierarchy
+4. FFMPEG error with labelled videos
+5. Clear cache when labeling videos? 
+
 """
 
 
@@ -39,7 +43,7 @@ class VideoCropTool:
 
 
     def __init__(self, video_path, output_file, output_folder, video_start_time,
-                    capture, output_label, multi_label=False,trn_mode=False,subtract_background=False,
+                    capture, output_label, multi_label=False,trn_mode=False,tsm_mode=False,subtract_background=False,
                  time_window_on = False,time_window=3):
         """
 
@@ -97,14 +101,22 @@ class VideoCropTool:
         self.frame_height = 0
 
 
-        #multi label
+        #model type
         self.multi_label=multi_label
         self.trn = trn_mode
+        self.tsm = tsm_mode
+        self.tsm_model = TemporalShift(torch.nn.Sequential(), n_segment=8, n_div=8, inplace=False)
+        self.tsm_model.load_state_dict(torch.load("pretrained_models/"+"TSM_kinetics_RGB_resnet50_shift8_blockres_avg_segment8_e50.pth",
+                                      map_location=torch.device('cpu')),strict=False)
+
+        # self.tsm_model = torch.load("pretrained_models/"+"TSM_kinetics_RGB_resnet50_shift8_blockres_avg_segment8_e50.pth",
+        #                             map_location=torch.device('cpu'))
 
 
         #subtract background
         self.subtract_background = subtract_background
         self.subtractor = cv2.createBackgroundSubtractorMOG2(history=100, varThreshold=50, detectShadows=True)
+
 
 
     def click_box(self,event, x,y, flags, param):
@@ -330,17 +342,17 @@ class VideoCropTool:
                             os.makedirs(self.output_folder+"/"+self.output_label)
 
 
-                        command = "bash " + "crop_tool.sh " + video_arg + left_arg + top_arg + width_arg + height_arg + output_arg + beginning_arg + end_arg
-                        os.chmod("./output_command.sh", 0o755)
+                        command = "bash " + "bash_scripts/crop_tool.sh " + video_arg + left_arg + top_arg + width_arg + height_arg + output_arg + beginning_arg + end_arg
+                        os.chmod("./bash_scripts/output_command.sh", 0o755)
 
-                        with open("output_command.sh", "w") as text_file:
+                        with open("bash_scripts/output_command.sh", "w") as text_file:
                             text_file.write('#!/bin/bash')
                             text_file.write("\n")
                             text_file.write(command + "\n")
                             text_file.write('#hello')
 
-                        os.chmod("./output_command.sh", 0o755)
-                        subprocess.check_call(["./output_command.sh"])
+                        os.chmod("./bash_scripts/output_command.sh", 0o755)
+                        subprocess.check_call(["./bash_scripts/output_command.sh"])
 
                         crop_time_end = time.time()
 
@@ -558,17 +570,17 @@ class VideoCropTool:
                         print(end_arg)
                         crop_time_start = time.time()
 
-                        command = "bash " + "crop_tool.sh " + video_arg + left_arg + top_arg + width_arg + height_arg + output_arg + beginning_arg + end_arg
-                        os.chmod("./output_command.sh", 0o755)
+                        command = "bash " + "bash_scripts/crop_tool.sh " + video_arg + left_arg + top_arg + width_arg + height_arg + output_arg + beginning_arg + end_arg
+                        os.chmod("./bash_scripts/output_command.sh", 0o755)
 
-                        with open("output_command.sh", "w") as text_file:
+                        with open("./bash_scripts/output_command.sh", "w") as text_file:
                             text_file.write('#!/bin/bash')
                             text_file.write("\n")
                             text_file.write(command + "\n")
                             text_file.write('#hello')
 
-                        os.chmod("./output_command.sh", 0o755)
-                        subprocess.check_call(["./output_command.sh"])
+                        os.chmod("./bash_scripts/output_command.sh", 0o755)
+                        subprocess.check_call(["./bash_scripts/output_command.sh"])
 
                         crop_time_end = time.time()
 
@@ -592,6 +604,16 @@ class VideoCropTool:
 
                         elif not self.trn:
                             os.system("python test_video.py --video_file " + self.output_folder + "/" + self.output_file + ".mp4 " + "--arch resnet3d50")
+                        if self.tsm:
+                            print('tsm results')
+                            tsm_frames = extract_frames(self.output_folder + "/" + self.output_file + ".mp4", 8)
+                            transform = models.load_transform()
+                            tsm_input = torch.stack([transform(frame) for frame in tsm_frames], 1)
+                            print(self.tsm_model.net)
+                            tsm_predictions = self.tsm_model(tsm_input)
+                            print(tsm_predictions)
+
+
 
                         os.chdir("/Users/brandonperez/Documents/GitHub/moments_crop/moments_models")
 
@@ -683,7 +705,7 @@ class VideoCropTool:
 def main():
     """Defines tool parameters and runs the localization tool"""
     TIME_WINDOW = 3  # seconds
-    config_file = open('config_localization.json')
+    config_file = open('./configs/config_localization.json')
     config = json.load(config_file)
 
     file_paths = config["file_paths"]
@@ -695,6 +717,7 @@ def main():
     modes = config["modes"]
     TRN_mode = modes["trn"]
     multi_mode = modes["multi_label"]
+    tsm_mode = modes["tsm_mode"]
 
     parameters = config["parameters"]
     video_start_time = parameters["video_start_time"]
@@ -714,9 +737,10 @@ def main():
     cap.set(cv2.CAP_PROP_POS_FRAMES, video_start_frame)
 
     my_crop_tool = VideoCropTool(video_file_path, output_file, output_folder, 0, cap, output_label,
-                                 trn_mode=TRN_mode,multi_label=multi_mode,subtract_background=False)
-    my_crop_tool.crop_and_predict()
-    #my_crop_tool.crop_and_label()
+                                 trn_mode=TRN_mode,multi_label=multi_mode,tsm_mode=tsm_mode,
+                                 subtract_background=False)
+   # my_crop_tool.crop_and_predict()
+    my_crop_tool.crop_and_label()
 
 if __name__=="__main__":
 

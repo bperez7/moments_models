@@ -19,11 +19,15 @@ from PIL import Image
 #cv2.destroyAllWindows()
 from torch.nn import functional as F
 
+os.environ['KMP_DUPLICATE_LIB_OK']='True'
+
 """ TODO: 
 1. Currently only able to crop up to a minute 
 2. Just count frames instead of time string parsing
 3. Directory hierarchy
 4. FFMPEG error with labelled videos
+5. Uniformly sample frames to speed up prediction
+6. YOLO
 """
 
 
@@ -99,6 +103,10 @@ class VideoCropTool:
         self.frame_height = 0
 
 
+        #models
+        self.resnet_3d_model =  models.load_model('resnet3d50')
+        self.categories = models.load_categories('category_momentsv2.txt')
+
         #model type
         self.multi_label=multi_label
         self.trn = trn_mode
@@ -114,6 +122,13 @@ class VideoCropTool:
         #subtract background
         self.subtract_background = subtract_background
         self.subtractor = cv2.createBackgroundSubtractorMOG2(history=100, varThreshold=50, detectShadows=True)
+
+
+        #initialization of input
+        self.recorded_frames = []
+        self.cropped_frames = []
+
+
 
 
 
@@ -459,6 +474,8 @@ class VideoCropTool:
 
 
 
+
+
                 # Display the resulting frame
                 current_time = self.cap.get(cv2.CAP_PROP_POS_MSEC)
                 current_time_in_secs = round(current_time / 1000)
@@ -522,8 +539,10 @@ class VideoCropTool:
                             fontScale, color, thickness, cv2.LINE_AA)
                 cv2.putText(frame, self.result_text, result_origin, font,
                             fontScale, color, thickness, cv2.LINE_AA)
-                # Red dot while cropping
+                # Red dot while cropping/adding frames
                 if self.recording:
+                    self.recorded_frames.append(frame)
+
                     #print('recording')
 
 
@@ -554,82 +573,89 @@ class VideoCropTool:
 
 
                 if self.box_finished:
-                        left_arg = "-l " + str(self.start[0]) + " "
-                        top_arg = "-t " + str(self.start[1]) + " "
-                        width_arg = "-w " + str(self.final_end[0] - self.start[0]) + " "
-                        height_arg = "-h " + str(self.final_end[1] -self.start[1]) + " "
-                        video_arg = "-f " + self.video_path + " "
-                        output_arg = "-o " + self.output_folder + "/" + self.output_file + " "
-                        beginning_arg = "-b " + str(self.start_trim_time_secs)+ " "
-                        end_arg = "-e " + TIME_WINDOW_STR
-                        #
-                        print("beginning and end ")
-                        print(beginning_arg)
-                        print(end_arg)
-                        crop_time_start = time.time()
 
-                        command = "bash " + "bash_scripts/crop_tool.sh " + video_arg + left_arg + top_arg + width_arg + height_arg + output_arg + beginning_arg + end_arg
-                        os.chmod("./bash_scripts/output_command.sh", 0o755)
+                    # left_arg = "-l " + str(self.start[0]) + " "
+                    # top_arg = "-t " + str(self.start[1]) + " "
+                    # width_arg = "-w " + str(self.final_end[0] - self.start[0]) + " "
+                    # height_arg = "-h " + str(self.final_end[1] - self.start[1]) + " "
+                        left_start = self.start[0]
+                        top_start = self.start[1]
+                        left_end = self.final_end[0]
+                        top_end = self.final_end[1]
+                        crop_width = self.final_end[0] - self.start[0]
+                        crop_height = self.final_end[1] - self.start[1]
 
-                        with open("./bash_scripts/output_command.sh", "w") as text_file:
-                            text_file.write('#!/bin/bash')
-                            text_file.write("\n")
-                            text_file.write(command + "\n")
-                            text_file.write('#hello')
+                        print('shape')
+                        print(self.recorded_frames[0].shape)
 
-                        os.chmod("./bash_scripts/output_command.sh", 0o755)
-                        subprocess.check_call(["./bash_scripts/output_command.sh"])
+                        self.cropped_frames=[frame[left_start:left_end, top_start:top_end, :] for frame in self.recorded_frames]
+                       # print(self.cropped_frames[0])
 
-                        crop_time_end = time.time()
+                        #im_sample = Image.fromarray(np.uint8(cm.gist_earth(self.cropped_frames[0]) * 255)).convert('RGB')
+                       # im_sample.show()
 
-                        crop_elapsed_time = crop_time_end - crop_time_start
+                        pil_frames = [Image.fromarray(frame, 'RGB') for frame in self.cropped_frames]
+                        transform = models.load_transform()
+                        res_input = torch.stack([transform(frame) for frame in pil_frames], 1).unsqueeze(0)
+                       # res_input = torch.stack([transform(frame) for frame in self.cropped_frames], 1).unsqueeze(0)
 
-                        print("Crop Time: " + str(crop_elapsed_time))
+                        with torch.no_grad():
+                            print('start prediction')
+                            logits = self.resnet_3d_model(res_input)
+                            print('end prediction')
+                            h_x = F.softmax(logits, 1).mean(dim=0)
+                            probs, idx = h_x.sort(0, True)
+                        for i in range(0, 5):
+                            print('{:.3f} -> {}'.format(probs[i], self.categories[idx[i]]))
+                            next_result = '{:.3f} -> {}'.format(probs[i], self.categories[idx[i]])
 
-                        # video_model_command = "python test_video.py --draw_crop_test.mp4 --arch resnet3d50"
+
+                           # predictions_results += next_result
+                           # predictions_results += '\n'
+                        #print(probs, idx)
 
                         prediction_time_start = time.time()
 
-                        if self.trn:
-                           # subprocess.call(["python", "test_video.py", "--video_file " + self.output_folder + "/" + self.output_file + ".mp4 "+
-                             #         "--arch BNInception " +"--dataset something " +"--weights pretrain/TRN_something_RGB_BNInception_TRNmultiscale_segment8_best.pth.tar"], cwd="TRN-pytorch")
-                            os.chdir("./TRN-pytorch")
-                            os.system("python test_video.py --video_file " + "../"+ self.output_folder + "/" + self.output_file + ".mp4 "
-                                     + "--arch BNInception --dataset something  --weights pretrain/TRN_something_RGB_BNInception_TRNmultiscale_segment8_best.pth.tar")
-
-                        if self.multi_label and not self.trn:
-                            os.system("python test_video.py --video_file " + self.output_folder + "/" + self.output_file + ".mp4 " + "--arch resnet3d50" + " --multi")
-
-                        elif not self.trn:
-                            os.system("python test_video.py --video_file " + self.output_folder + "/" + self.output_file + ".mp4 " + "--arch resnet3d50")
-                        if self.tsm:
-                            print('tsm results')
-                            tsm_frames = extract_frames(self.output_folder + "/" + self.output_file + ".mp4", 8)
-                            transform = models.load_transform()
-                            tsm_input = torch.stack([transform(frame) for frame in tsm_frames], 1)
-                            print(self.tsm_model.net)
-                            tsm_predictions = self.tsm_model(tsm_input)
-                            print(tsm_predictions)
-
-
-
-                        os.chdir("/Users/brandonperez/Documents/GitHub/moments_crop/moments_models")
+                        # if self.trn:
+                        #    # subprocess.call(["python", "test_video.py", "--video_file " + self.output_folder + "/" + self.output_file + ".mp4 "+
+                        #      #         "--arch BNInception " +"--dataset something " +"--weights pretrain/TRN_something_RGB_BNInception_TRNmultiscale_segment8_best.pth.tar"], cwd="TRN-pytorch")
+                        #     os.chdir("./TRN-pytorch")
+                        #     os.system("python test_video.py --video_file " + "../"+ self.output_folder + "/" + self.output_file + ".mp4 "
+                        #              + "--arch BNInception --dataset something  --weights pretrain/TRN_something_RGB_BNInception_TRNmultiscale_segment8_best.pth.tar")
+                        #
+                        # if self.multi_label and not self.trn:
+                        #     os.system("python test_video.py --video_file " + self.output_folder + "/" + self.output_file + ".mp4 " + "--arch resnet3d50" + " --multi")
+                        #
+                        # elif not self.trn:
+                        #     os.system("python test_video.py --video_file " + self.output_folder + "/" + self.output_file + ".mp4 " + "--arch resnet3d50")
+                        # if self.tsm:
+                        #     print('tsm results')
+                        #     tsm_frames = extract_frames(self.output_folder + "/" + self.output_file + ".mp4", 8)
+                        #     transform = models.load_transform()
+                        #     tsm_input = torch.stack([transform(frame) for frame in tsm_frames], 1)
+                        #     print(self.tsm_model.net)
+                        #     tsm_predictions = self.tsm_model(tsm_input)
+                        #     print(tsm_predictions)
 
 
 
-                        prediction_time_end = time.time()
-
-                        prediction_elapsed_time = prediction_time_end - prediction_time_start
-                        print("Prediction Time: " + str(prediction_elapsed_time))
-                        # Opening prediction file
-                        file1 = open('predictions.txt', 'r')
-                        result_text = ""
-                        for line in file1:
-                            print(line)
-                            result_text += line
-                            break  # just first prediction
-                            # result_text += "\n"
-
+                        # os.chdir("/Users/brandonperez/Documents/GitHub/moments_crop/moments_models")
+                        #
+                        #
+                        #
+                        # prediction_time_end = time.time()
+                        #
+                        # prediction_elapsed_time = prediction_time_end - prediction_time_start
+                        # print("Prediction Time: " + str(prediction_elapsed_time))
+                        # # Opening prediction file
+                        # file1 = open('predictions.txt', 'r')
+                        # result_text = ""
+                        # for line in file1:
+                        #     print(line)
+                        #     result_text += line
+                        #     break  # just first prediction
+                        #     # result_text += "\n"
+                        #
                         # reset
                         self.box_created = False
                         self.box_started = False
