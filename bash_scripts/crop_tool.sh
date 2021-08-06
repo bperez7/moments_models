@@ -28,7 +28,7 @@ echo "top $top"
 
 ffmpeg -i "$file" -ss "$beginning" -t "$end" -c:v copy -c:a copy trim_ipseek_test.mp4
 
-ffmpeg -i trim_ipseek_test.mp4 -filter:v "crop=${width}:${height}:${left}:${top}" -c:a copy "${output_file}".mp4
+ffmpeg -i trim_ipseek_test.mp4 -max_muxing_queue_size 1024 -filter:v "crop=${width}:${height}:${left}:${top}" -c:a copy "${output_file}".mp4
 
 
 

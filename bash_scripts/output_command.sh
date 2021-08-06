@@ -1,3 +1,3 @@
 #!/bin/bash
-bash bash_scripts/crop_tool.sh -f videos/yt8m_video_library/constructions/group_7/ncUp.mp4 -l 182 -t 80 -w 853 -h 498 -o trimmed_videos/demo_vid -b 1 -e 00:00:03
+bash bash_scripts/crop_tool.sh -f machine_videos/machine/excavating/0wsg.mp4 -l 6 -t 6 -w 1258 -h 707 -o label_videos/excavating/excavating_12 -b 1 -e 00:00:23
 #hello
