@@ -11,6 +11,8 @@ import cv2
 
 def extract_frames(video_file, num_frames=8):
     """Return a list of PIL image frames uniformly sampled from an mp4 video."""
+
+    print(video_file)
     try:
         os.makedirs(os.path.join(os.getcwd(), 'frames'))
     except OSError:
@@ -19,7 +21,7 @@ def extract_frames(video_file, num_frames=8):
                               stderr=subprocess.PIPE).communicate()
     # Search and parse 'Duration: 00:05:24.13,' from ffmpeg stderr.
     re_duration = re.compile(r'Duration: (.*?)\.')
-    
+
     duration = re_duration.search(str(output[1])).groups()[0]
 
     seconds = functools.reduce(lambda x, y: x * 60 + y,
