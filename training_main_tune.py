@@ -220,7 +220,7 @@ def main():
 ]
 
     for test_input_file in all_test_input_files:
-        test_input_frames = extract_frames(test_input_file, 8)
+        test_input_frames = extract_frames("videos/label_videos/"+test_input_file, 8)
         transform = models.load_transform()
         test_input =  torch.stack([transform(frame) for frame in test_input_frames], 1).unsqueeze(0)
         test_output = model(test_input)
