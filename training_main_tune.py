@@ -130,7 +130,7 @@ def main():
 
     train_loader = torch.utils.data.DataLoader(
         CustomImageTrainDataset(train_csv_path, videos_path),
-        batch_size=2,shuffle=True
+        batch_size=33,shuffle=True
     )
 
     val_loader = torch.utils.data.DataLoader(
