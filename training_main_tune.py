@@ -194,13 +194,30 @@ def main():
     #test_input_file = "videos/label_videos/excavating/excavating_1.mp4"
     #test_input_file = "videos/label_videos/lowering/lowering_1.mp4"
     test_input_file = config["datasets"]["debug_video"]
-    all_test_input_files = ["videos/label_videos/lowering/lowering_1.mp4",
-                            "videos/label_videos/lowering/lowering_2.mp4",
-                            "videos/label_videos/excavating/excavating_1.mp4",
-                            "videos/label_videos/excavating/excavating_6.mp4",
-                            "videos/label_videos/bulldozing/bulldozing_2.mp4",
-                            "videos/label_videos/bulldozing/bulldozing_3.mp4"
-                            ]
+    all_test_input_files = ["bulldozing/bulldozing_2.mp4",
+"bulldozing/bulldozing_3.mp4",
+"bulldozing/bulldozing_4.mp4",
+"bulldozing/bulldozing_5.mp4",
+"bulldozing/bulldozing_6.mp4",
+"bulldozing/bulldozing_8.mp4",
+"bulldozing/bulldozing_9.mp4",
+"excavating/excavating_1.mp4",
+"excavating/excavating_2.mp4",
+"excavating/excavating_3.mp4",
+"excavating/excavating_5.mp4",
+"excavating/excavating_6.mp4",
+"excavating/excavating_9.mp4",
+"excavating/excavating_10.mp4",
+"excavating/excavating_11.mp4",
+"excavating/excavating_12.mp4",
+"excavating/excavating_13.mp4",
+"excavating/excavating_14.mp4",
+"excavating/excavating_15.mp4",
+"excavating/excavating_16.mp4",
+"loading/loading_1.mp4",
+"loading/loading_2.mp4",
+"loading/loading_3.mp4"
+]
 
     for test_input_file in all_test_input_files:
         test_input_frames = extract_frames(test_input_file, 8)
