@@ -12,6 +12,8 @@ model = torch.load(model_folder+"/"+model_name)
 model = torch.nn.DataParallel(model, device_ids=[0,1]).cuda()
 model.eval()
 
+print(model)
+
 
 training_true_labels = [0 for i in range(33)]
 training_true_labels[8:20] = [1 for i in range(8,20)]
