@@ -12,6 +12,7 @@ model = torch.load(model_folder+"/"+model_name)
 model = torch.nn.DataParallel(model, device_ids=[0,1]).cuda()
 model.eval()
 
+
 training_true_labels = [0 for i in range(33)]
 training_true_labels[8:20] = [1 for i in range(8,20)]
 training_true_labels[20:] = [2 for i in range(20,33)]
@@ -58,62 +59,64 @@ all_val_input_files = ["bulldozing/bulldozing_12.mp4",
 "loading/loading_16.mp4"
 ]
 
-training_correct = 0
-for test_input_file in all_train_input_files:
-    test_input_frames = extract_frames("videos/label_videos/" + test_input_file, 8)
-    transform = models.load_transform()
-    test_input = torch.stack([transform(frame) for frame in test_input_frames], 1).unsqueeze(0)
-    print(test_input)
-    test_output = model(test_input)
-    print(test_input_file)
-    print(test_output)
-    # prec1, prec5 = accuracy(test_output.data, target, topk=(1, 2))
-    # maxk=(1,2)
-    maxk = 2
-    _, pred = test_output.topk(maxk)
-    pred = pred.t()
-    print(_)
-    print(pred)
-    pred_label = int(pred[0])
-    training_pred_labels.append(pred_label)
+with torch.no_grad():
+    training_correct = 0
 
-    if "bulldozing" in test_input_file:
-        if int(pred[0]) == 0:
-            training_correct += 1
-    elif "excavating" in test_input_file:
-        if int(pred[0]) == 1:
-            training_correct += 1
-    elif "loading" in test_input_file:
-        if int(pred[0]) == 2:
-            training_correct += 1
-    print('Training Accuracy: ' + str(training_correct / 33))
+    for test_input_file in all_train_input_files:
+        test_input_frames = extract_frames("videos/label_videos/" + test_input_file, 8)
+        transform = models.load_transform()
+        test_input = torch.stack([transform(frame) for frame in test_input_frames], 1).unsqueeze(0)
+        print(test_input)
+        test_output = model(test_input)
+        print(test_input_file)
+        print(test_output)
+        # prec1, prec5 = accuracy(test_output.data, target, topk=(1, 2))
+        # maxk=(1,2)
+        maxk = 2
+        _, pred = test_output.topk(maxk)
+        pred = pred.t()
+        print(_)
+        print(pred)
+        pred_label = int(pred[0])
+        training_pred_labels.append(pred_label)
 
-val_correct = 0
-for test_input_file in all_val_input_files:
-    test_input_frames = extract_frames("videos/label_videos/" + test_input_file, 8)
-    transform = models.load_transform()
-    test_input = torch.stack([transform(frame) for frame in test_input_frames], 1).unsqueeze(0)
-    test_output = model(test_input)
-    print(test_input_file)
-    print(test_output)
-    # prec1, prec5 = accuracy(test_output.data, target, topk=(1, 2))
-    # maxk=(1,2)
-    maxk = 2
-    _, pred = test_output.topk(maxk)
-    pred = pred.t()
-    print(_)
-    print(pred)
+        if "bulldozing" in test_input_file:
+            if int(pred[0]) == 0:
+                training_correct += 1
+        elif "excavating" in test_input_file:
+            if int(pred[0]) == 1:
+                training_correct += 1
+        elif "loading" in test_input_file:
+            if int(pred[0]) == 2:
+                training_correct += 1
+        print('Training Accuracy: ' + str(training_correct / 33))
 
-    if "bulldozing" in test_input_file:
-        if int(pred[0]) == 0:
-            val_correct += 1
-    elif "excavating" in test_input_file:
-        if int(pred[0]) == 1:
-            val_correct += 1
-    elif "loading" in test_input_file:
-        if int(pred[0]) == 2:
-            val_correct += 1
-    print('Validation Accuracy: ' + str(val_correct / 9))
+    val_correct = 0
+    for test_input_file in all_val_input_files:
+        test_input_frames = extract_frames("videos/label_videos/" + test_input_file, 8)
+        transform = models.load_transform()
+        test_input = torch.stack([transform(frame) for frame in test_input_frames], 1).unsqueeze(0)
+        test_output = model(test_input)
+        print(test_input_file)
+        print(test_output)
+        # prec1, prec5 = accuracy(test_output.data, target, topk=(1, 2))
+        # maxk=(1,2)
+        maxk = 2
+        _, pred = test_output.topk(maxk)
+        pred = pred.t()
+        print(_)
+        print(pred)
+
+        if "bulldozing" in test_input_file:
+            if int(pred[0]) == 0:
+                val_correct += 1
+        elif "excavating" in test_input_file:
+            if int(pred[0]) == 1:
+                val_correct += 1
+        elif "loading" in test_input_file:
+            if int(pred[0]) == 2:
+                val_correct += 1
+        print('Validation Accuracy: ' + str(val_correct / 9))
 
 
 
