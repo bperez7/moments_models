@@ -10,7 +10,7 @@ from models import ResNet3D
 model_folder = "trained_models"
 model_name = "model_1.h5"
 model = torch.load(model_folder+"/"+model_name)
-model = torch.nn.DataParallel(model, device_ids=[0,1]).cuda()
+#model = torch.nn.DataParallel(model, device_ids=[0,1]).cuda()
 model.eval()
 
 print(model)
