@@ -220,7 +220,17 @@ def main():
 "excavating/excavating_16.mp4",
 "loading/loading_1.mp4",
 "loading/loading_2.mp4",
-"loading/loading_3.mp4"
+"loading/loading_3.mp4",
+"loading/loading_4.mp4",
+"loading/loading_5.mp4",
+"loading/loading_6.mp4",
+"loading/loading_7.mp4",
+"loading/loading_8.mp4",
+"loading/loading_9.mp4",
+"loading/loading_10.mp4",
+"loading/loading_11.mp4",
+"loading/loading_12.mp4"
+"loading/loading_13.mp4"
 ]
 
     all_val_input_files = ["bulldozing/bulldozing_12.mp4",
