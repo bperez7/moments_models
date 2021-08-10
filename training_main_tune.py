@@ -10,6 +10,8 @@ import torch.backends.cudnn as cudnn
 import torch.optim
 from torch.nn.utils import clip_grad_norm
 from utils import extract_frames
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
+
 
 
 # from dataset import TSNDataSet
@@ -286,6 +288,38 @@ def main():
             if int(pred[0]) == 2:
                 val_correct += 1
     print('Validation Accuracy: ' + str(val_correct / 9))
+
+    training_true_labels = [0 for i in range(33)]
+    training_true_labels[8:20] = [1 for i in range(8, 20)]
+    training_true_labels[20:] = [2 for i in range(20, 33)]
+    training_pred_labels = []
+
+    val_true_labels = [0 for i in range(9)]
+    val_true_labels[2:6] = [1 for i in range(2, 6)]
+    val_true_labels[6:] = [2 for i in range(6, 10)]
+    val_pred_labels = []
+
+    training_cm = confusion_matrix(training_true_labels, training_pred_labels)
+    val_cm = confusion_matrix(val_true_labels, val_pred_labels)
+
+    print("Training Confusion Matrix")
+    print(training_cm)
+    print("Validation Confusion Matrix")
+    print(val_cm)
+
+    f=open("result_train_1.txt", "w")
+
+    training_results = ['Training Accuracy: ' + str(training_correct/33) + "\n",
+                        'Validation Accuracy: ' + str(val_correct / 9) + "\n",
+                        "Training Confusion Matrix" +"\n",
+                        str(training_cm),"\n",
+                        "Validation Confusion Matrix" + "\n",
+                        str(val_cm)
+                        ]
+    f.writeLines(training_results)
+
+
+
 
 
 
