@@ -229,7 +229,7 @@ def main():
 "loading/loading_9.mp4",
 "loading/loading_10.mp4",
 "loading/loading_11.mp4",
-"loading/loading_12.mp4"
+"loading/loading_12.mp4",
 "loading/loading_13.mp4"
 ]
 
