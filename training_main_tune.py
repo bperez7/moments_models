@@ -235,6 +235,7 @@ def main():
 ]
 
     training_correct = 0
+    training_pred_labels = []
     for test_input_file in all_train_input_files:
         test_input_frames = extract_frames("videos/label_videos/"+test_input_file, 8)
         transform = models.load_transform()
@@ -259,10 +260,13 @@ def main():
         elif "loading" in test_input_file:
             if int(pred[0])==2:
                 training_correct+=1
+        pred_label = int(pred[0])
+        training_pred_labels.append(pred_label)
 
     print('Training Accuracy: ' + str(training_correct/33))
 
     val_correct = 0
+    val_pred_labels = []
     for test_input_file in all_val_input_files:
         test_input_frames = extract_frames("videos/label_videos/" + test_input_file, 8)
         transform = models.load_transform()
@@ -287,12 +291,14 @@ def main():
         elif "loading" in test_input_file:
             if int(pred[0]) == 2:
                 val_correct += 1
+        pred_label = int(pred[0])
+        val_pred_labels.append(pred_label)
     print('Validation Accuracy: ' + str(val_correct / 9))
 
     training_true_labels = [0 for i in range(33)]
     training_true_labels[8:20] = [1 for i in range(8, 20)]
     training_true_labels[20:] = [2 for i in range(20, 33)]
-    training_pred_labels = []
+
 
     val_true_labels = [0 for i in range(9)]
     val_true_labels[2:6] = [1 for i in range(2, 6)]
@@ -317,11 +323,6 @@ def main():
                         str(val_cm)
                         ]
     f.writeLines(training_results)
-
-
-
-
-
 
 
 
