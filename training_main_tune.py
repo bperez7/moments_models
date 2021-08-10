@@ -332,7 +332,8 @@ def main():
                         "Validation Confusion Matrix" + "\n",
                         str(val_cm)
                         ]
-    f.writeLines(training_results)
+    for l in training_results:
+        f.write(l)
 
 
 
