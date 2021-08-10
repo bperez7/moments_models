@@ -2,6 +2,9 @@ from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 import torch
 from utils import extract_frames
 import models
+import torch.nn.parallel
+import torch.backends.cudnn as cudnn
+import torch.optim
 
 model_folder = "trained_models"
 model_name = "model_1.h5"
