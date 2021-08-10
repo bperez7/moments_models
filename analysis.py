@@ -58,6 +58,7 @@ for test_input_file in all_train_input_files:
     test_input_frames = extract_frames("videos/label_videos/" + test_input_file, 8)
     transform = models.load_transform()
     test_input = torch.stack([transform(frame) for frame in test_input_frames], 1).unsqueeze(0)
+    print(test_input)
     test_output = model(test_input)
     print(test_input_file)
     print(test_output)
