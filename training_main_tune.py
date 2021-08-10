@@ -312,8 +312,8 @@ def main():
 
     val_true_labels = [0 for i in range(9)]
     val_true_labels[2:6] = [1 for i in range(2, 6)]
-    val_true_labels[6:] = [2 for i in range(6, 10)]
- 
+    val_true_labels[6:] = [2 for i in range(6, 9)]
+
 
     training_cm = confusion_matrix(training_true_labels, training_pred_labels)
     val_cm = confusion_matrix(val_true_labels, val_pred_labels)
