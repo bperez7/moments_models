@@ -191,6 +191,7 @@ def main():
 
     print("Losses per epoch: ")
     print(training_loss_list)
+    print(val_loss_list)
     plt.plot(training_loss_list)
     plt.plot(val_loss_list)
 
