@@ -160,7 +160,7 @@ def main():
 
     log_training = open("log_training",'w')
     # log_training = open(os.path.join(args.root_log, '%s.csv' % args.store_name), 'w')
-
+    val_loss_list = []
     for epoch in range(start_epoch, epochs):
        print('epoch: ' + str(epoch))
 
@@ -175,11 +175,12 @@ def main():
         # evaluate on validation set
 
        if ((epoch+1)% eval_freq==0 or epoch == epochs-1):
-            prec1 = validate(val_loader, model, criterion, (epoch + 1) * len(train_loader), log_training)
-
+            #prec1 = validate(val_loader, model, criterion, (epoch + 1) * len(train_loader), log_training)
+            val_loss = validate(val_loader, model, criterion, (epoch + 1) * len(train_loader), log_training)
+            val_loss_list.append(val_loss)
             # remember best prec@1 and save checkpoint
-            is_best = prec1 > best_prec1
-            best_prec1 = max(prec1, best_prec1)
+          #  is_best = prec1 > best_prec1
+          #  best_prec1 = max(prec1, best_prec1)
             # save_checkpoint({
             #     'epoch': epoch + 1,
             #     'arch': args.arch,
@@ -191,6 +192,7 @@ def main():
     print("Losses per epoch: ")
     print(training_loss_list)
     plt.plot(training_loss_list)
+    plt.plot(val_loss_list)
 
     torch.save(model, "trained_models/model_1.h5" )
 
@@ -484,7 +486,8 @@ def validate(val_loader, model, criterion, iter, log):
     log.write(output + ' ' + output_best + '\n')
     log.flush()
 
-    return top1.avg
+   #return top1.avg
+    return float(loss)
 
 
 def save_checkpoint(state, is_best, filename='checkpoint.pth.tar'):
