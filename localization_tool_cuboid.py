@@ -8,7 +8,7 @@ from utils import extract_frames
 import numpy as np
 import torch
 import models
-from tsm_model import TemporalShift
+#from tsm_model import TemporalShift
 
 from matplotlib import cm
 from PIL import Image
