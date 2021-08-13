@@ -146,10 +146,10 @@ class VideoCropTool:
         #model type
         self.multi_label=multi_label
         self.trn = trn_mode
-        self.tsm = tsm_mode
-        self.tsm_model = TemporalShift(torch.nn.Sequential(), n_segment=8, n_div=8, inplace=False)
-        self.tsm_model.load_state_dict(torch.load("pretrained_models/"+"TSM_kinetics_RGB_resnet50_shift8_blockres_avg_segment8_e50.pth",
-                                      map_location=torch.device('cpu')),strict=False)
+        # self.tsm = tsm_mode
+        # self.tsm_model = TemporalShift(torch.nn.Sequential(), n_segment=8, n_div=8, inplace=False)
+        # self.tsm_model.load_state_dict(torch.load("pretrained_models/"+"TSM_kinetics_RGB_resnet50_shift8_blockres_avg_segment8_e50.pth",
+        #                               map_location=torch.device('cpu')),strict=False)
 
         # self.tsm_model = torch.load("pretrained_models/"+"TSM_kinetics_RGB_resnet50_shift8_blockres_avg_segment8_e50.pth",
         #                             map_location=torch.device('cpu'))
