@@ -44,7 +44,7 @@ frame_count = 0
 global_trim_time = None
 crop_started = False
 
-from imageai.Detection import ObjectDetection
+#from imageai.Detection import ObjectDetection
 import os
 import cv2
 from moviepy.editor import *
@@ -183,11 +183,11 @@ class VideoCropTool:
 
 
         #object detection
-        self.detector = ObjectDetection()
-        #self.detector.setModelTypeAsTinyYOLOv3()
-        self.detector.setModelTypeAsYOLOv3()
-        self.detector.setModelPath(os.path.join(execution_path, "yolo.h5"))
-        self.detector.loadModel(detection_speed="fast")
+        # self.detector = ObjectDetection()
+        # #self.detector.setModelTypeAsTinyYOLOv3()
+        # self.detector.setModelTypeAsYOLOv3()
+        # self.detector.setModelPath(os.path.join(execution_path, "yolo.h5"))
+        # self.detector.loadModel(detection_speed="fast")
         self.detected_bboxes = [None for i in range(20)]
 
         self.num_objects = None
