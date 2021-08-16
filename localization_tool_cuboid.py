@@ -3,15 +3,20 @@ import os
 import time
 import subprocess
 import json
+
+import torchvision.models.detection.faster_rcnn
+
 from utils import extract_frames
 #from matplotlib import pyplot as plt
 import numpy as np
 import torch
 import models
+from torchvision import transforms
 #from tsm_model import TemporalShift
 
 from matplotlib import cm
 from PIL import Image
+from torchvision.models.detection import fasterrcnn_resnet50_fpn
 
 
 #from test_video import get_predictions_results
@@ -72,7 +77,7 @@ class VideoCropTool:
 
     def __init__(self, video_path, output_file, output_folder, video_start_time,
                     capture, output_label, multi_label=False,trn_mode=False,tsm_mode=False,subtract_background=False,
-                 time_window_on = False,time_window=3):
+                 time_window_on = False,time_window=3,fps=30):
         """
 
         Args:
@@ -92,6 +97,7 @@ class VideoCropTool:
         self.output_label=output_label
         self.video_start_time = video_start_time
         self.cap = capture
+        self.fps = fps
     #    self.video_start_frame = video_start_frame
 
         #for clikc box
@@ -137,11 +143,22 @@ class VideoCropTool:
         self.detected_objects = [None for i in range(50)]
 
 
+        #transforms
+        self.det_transform = transforms.Compose([
+            transforms.ToTensor(),
+            transforms.Normalize([0.485, 0.456, 0.406],
+                                 [0.229, 0.224, 0.225])])
+
+
 
 
         #models
         self.resnet_3d_model =  models.load_model('resnet3d50')
         self.categories = models.load_categories('category_momentsv2.txt')
+        self.fast_rcnn = fasterrcnn_resnet50_fpn(pretrained=True)
+        self.fast_mobile = None
+        self.fast_rcnn.eval()
+
 
         #model type
         self.multi_label=multi_label
@@ -172,6 +189,12 @@ class VideoCropTool:
         self.detector.setModelPath(os.path.join(execution_path, "yolo.h5"))
         self.detector.loadModel(detection_speed="fast")
         self.detected_bboxes = [None for i in range(20)]
+
+        self.num_objects = None
+
+
+        #video
+
 
     def detect_from_image(self, frame, obj_output_folder, frame_name):
         out_path = os.path.join(execution_path + "/" + obj_output_folder,frame_name+ "_result.jpg")
@@ -480,6 +503,7 @@ class VideoCropTool:
             else:
                 break
 
+
         self.cap.release()
         cv2.destroyAllWindows()
 
@@ -496,11 +520,18 @@ class VideoCropTool:
 
 
         """
+
+
         #for generating the background subtracted video
         mask_array = []
         mask_size = (self.frame_width, self.frame_height)
         mask_frames = []
 
+        #video
+     #   size = tuple(frames[0].shape)
+
+
+        frame_count = 0
         while (self.cap.isOpened()):
 
 
@@ -524,6 +555,14 @@ class VideoCropTool:
 
                 # increment frame count
                 self.current_frame_count += 1
+                if self.current_frame_count==1:
+                   # video_frame_size = frame.shape[]
+                    fourcc = cv2.VideoWriter_fourcc(*'FMP4')
+                    video_output_folder = "videos"
+                    video_output_file = "cuboid_test"
+                    out = cv2.VideoWriter(video_output_folder + "/" + video_output_file+ '.mp4',
+                                          fourcc, float(self.fps), (frame.shape[1], frame.shape[0]))
+
                 buffer_shift_time_start = time.time()
                 self.frame_buffer = self.frame_buffer[1:]+[frame]
                 buffer_shift_time_end = time.time()
@@ -538,18 +577,33 @@ class VideoCropTool:
 
                     print('buffer shift time: ' + str(buffer_shift_diff))
                     obj_detection_time_start = time.time()
-                    obj_detect_result = self.detect_from_image(frame=frame, obj_output_folder="obj_detect_out",frame_name="obj_test")
+                    obj_pil_frame = Image.fromarray(frame, 'RGB')
+
+
+                  #  obj_detect_result = self.detect_from_image(frame=frame, obj_output_folder="obj_detect_out",frame_name="obj_test")
+                    print(frame.shape)
+                   # frame_tensor = torch.from_numpy(frame)
+                    #print(frame_tensor)
+                    transformed_frame = self.det_transform(obj_pil_frame)
+                    print(transformed_frame.size())
+                    obj_detect_result = self.fast_rcnn([self.det_transform(obj_pil_frame)])
+                    print(obj_detect_result)
                     obj_detection_time_end = time.time()
                     obj_detection_diff = obj_detection_time_start-obj_detection_time_end
                     print('obj detection time: ' + str(obj_detection_diff))
 
                     obj_count = 0
-                    for result in obj_detect_result:
+                    #obj_length = obj_detect_result[0]['boxes']
+                    #print(obj_length)
+                    self.detected_objects[:len(obj_detect_result[0]['boxes'])] = obj_detect_result
+                    self.num_objects = min(len(obj_detect_result[0]['boxes']),4)
+                    for i in range(min(len(obj_detect_result[0]['boxes']),4)):
                         obj_count+=1
-                        bbox = result[2]
-                        self.detected_objects[:len(obj_detect_result)] = obj_detect_result
+                       # bbox = result[2]
+                        bbox = obj_detect_result[0]['boxes'][i]
 
-                        x1, y1, x2, y2 = bbox
+
+                        x1, y1, x2, y2 = int(bbox[0]), int(bbox[1]), int(bbox[2]), int(bbox[3])
                         detected_obj_array = frame[x1:x2,y1:y2]
 
 
@@ -589,8 +643,8 @@ class VideoCropTool:
                             probs, idx = h_x.sort(0, True)
                         for i in range(0, 5):
                             if i == 0:
-                                bbox_label = str(probs[i]) + ", " + str(self.categories[idx[i]])
-                                self.detected_bboxes[obj_count-1] = (bbox, bbox_label)
+                                bbox_label = str(round(float(probs[i]),3)) + ", " + str(self.categories[idx[i]])
+                                self.detected_bboxes[obj_count-1] = ([x1,y1,x2,y2], bbox_label)
                             print('{:.3f} -> {}'.format(probs[i], self.categories[idx[i]]))
                             next_result = '{:.3f} -> {}'.format(probs[i], self.categories[idx[i]])
                     self.detected_bboxes[obj_count:] = [None for i in range(obj_count,20)]
@@ -689,11 +743,15 @@ class VideoCropTool:
                             fontScale, color, thickness, cv2.LINE_AA)
 
                 #draw bboxes
-                for bounding_box in self.detected_bboxes:
+                for bounding_box in self.detected_bboxes[:self.num_objects]:
                     if bounding_box!=None:
                         bbox_start = bounding_box[0][0:2]
                         bbox_end = bounding_box[0][2:]
                         cv2.rectangle(frame,bbox_start , bbox_end, thickness=5, color=222)
+                        action_label = bounding_box[1]
+
+                        cv2.putText(frame, action_label, bbox_start , font,
+                                    .5, (0,255,0), 1, cv2.LINE_AA)
 
 
                 # Red dot while cropping/adding frames
@@ -723,7 +781,7 @@ class VideoCropTool:
                 if self.subtract_background==True:
                     mask = self.subtractor.apply(frame)
                     mask_array.append(mask)
-
+                out.write(frame)
               #  cv2.imshow('Frame', frame)
 
 
@@ -831,9 +889,9 @@ class VideoCropTool:
 
 
 
-
-        # self.cap.release()
-        # cv2.destroyAllWindows()
+        out.release()
+        self.cap.release()
+        cv2.destroyAllWindows()
         # #generate mask video
         #
         # #mask_array = np.array(mask_array)
@@ -920,7 +978,7 @@ def main():
 
     my_crop_tool = VideoCropTool(video_file_path, output_file, output_folder, 0, cap, output_label,
                                  trn_mode=TRN_mode,multi_label=multi_mode,tsm_mode=tsm_mode,
-                                 subtract_background=False)
+                                 subtract_background=False, fps=fps)
     my_crop_tool.crop_and_predict()
     #my_crop_tool.crop_and_label()
 
