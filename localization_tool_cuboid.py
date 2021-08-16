@@ -540,8 +540,8 @@ class VideoCropTool:
             ret, frame = self.cap.read()
 
 
-            cv2.namedWindow("Frame")
-            cv2.setMouseCallback("Frame", self.click_box)
+          #  cv2.namedWindow("Frame")
+          #  cv2.setMouseCallback("Frame", self.click_box)
 
             # get vcap property (height and width)
             self.frame_width = self.cap.get(cv2.CAP_PROP_FRAME_WIDTH)  # float `width`
