@@ -2,20 +2,21 @@
 
     "modes": {
       "trn": false,
-      "multi_label": false
+      "multi_label": false,
+      "tsm_mode": false
 
 
     },
     "file_paths": {
-      "video_file_path": "videos/yt8m_video_library/constructions/group_7/ncUp.mp4",
-      "output_file": "demo_vid",
+      "video_file_path": "machine_videos/machine/loading/BD9f.mp4",
+      "output_file": "testing",
       "output_folder": "trimmed_videos",
-      "output_label": "lifting"
+      "output_label": "loading"
 
     },
 
     "parameters": {
-      "video_start_time": 0
+      "video_start_time": 190
 
     }
 
