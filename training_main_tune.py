@@ -97,7 +97,7 @@ def main():
     #add layers to specify number of classes
     expansion = 4
     #model.fc = torch.nn.Linear(512 * expansion, 306)
-    model.last_linear = torch.nn.Linear(in_features=512 * expansion, out_features=num_class, bias=True)
+    model.last_linear = torch.nn.Linear(in_features=512 * expansion, out_features=num_class, bias=True).cuda()
    # print(model)
 
 
