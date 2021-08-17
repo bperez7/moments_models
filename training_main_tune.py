@@ -72,7 +72,7 @@ def main():
 
     num_class = hyperparameters["num_classes"]
 
-    output_model_name = hyperparameters["misc"]["output_model_name"]
+    output_model_name = config["misc"]["output_model_name"]
 
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
