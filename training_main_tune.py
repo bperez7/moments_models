@@ -104,7 +104,8 @@ def main():
 
 
     #For GPU parallelization
-    model = torch.nn.DataParallel(model, device_ids=[0,1]).cuda()
+   # model = torch.nn.DataParallel(model, device_ids=[0,1]).cuda()
+    model = model.cuda()
 
     # #if args.resume:
     #     if os.path.isfile(args.resume):
@@ -457,6 +458,7 @@ def validate(val_loader, model, criterion, iter, log):
     end = time.time()
     for i, (input, target) in enumerate(val_loader):
         target = target.cuda(async=True)
+        target = target.long()
      #   input_var = torch.autograd.Variable(input, volatile=True)
         with torch.no_grad():
             input_var = input
