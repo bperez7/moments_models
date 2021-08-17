@@ -58,7 +58,7 @@ def horizontal_transform(folder, filename, output_folder, write=False):
 def blur_transform(folder, filename, output_folder, write=False):
     frames, fps = video_loader(folder+"/"+filename)
     sometimes = lambda aug: va.Sometimes(1, aug)  # Used to apply augmentor with 100% probability
-    seq = va.Sequential([  # randomly rotates the video with a degree randomly choosen from [-10, 10]
+    seq = va.Sequential([
         sometimes(va.GaussianBlur())  #blurs
     ])
     video_aug = seq(frames)
@@ -68,7 +68,7 @@ def blur_transform(folder, filename, output_folder, write=False):
 def elastic_transform(folder, filename, output_folder, write=False):
     frames, fps = video_loader(folder+"/"+filename)
     sometimes = lambda aug: va.Sometimes(1, aug)  # Used to apply augmentor with 100% probability
-    seq = va.Sequential([  # randomly rotates the video with a degree randomly choosen from [-10, 10]
+    seq = va.Sequential([
         sometimes(va.ElasticTransformation())
     ])
     video_aug = seq(frames)
@@ -78,7 +78,7 @@ def elastic_transform(folder, filename, output_folder, write=False):
 def piecewise_affine_transform(folder, filename, output_folder, write=False):
     frames, fps = video_loader(folder+"/"+filename)
     sometimes = lambda aug: va.Sometimes(1, aug)  # Used to apply augmentor with 100% probability
-    seq = va.Sequential([  # randomly rotates the video with a degree randomly choosen from [-10, 10]
+    seq = va.Sequential([
         sometimes(va.PiecewiseAffineTransform())
     ])
     video_aug = seq(frames)
@@ -88,7 +88,7 @@ def piecewise_affine_transform(folder, filename, output_folder, write=False):
 def superpixel_transform(folder, filename, output_folder, write=False):
     frames, fps = video_loader(folder+"/"+filename)
     sometimes = lambda aug: va.Sometimes(1, aug)  # Used to apply augmentor with 100% probability
-    seq = va.Sequential([  # randomly rotates the video with a degree randomly choosen from [-10, 10]
+    seq = va.Sequential([
         sometimes(va.Superpixel())  #blurs
     ])
     video_aug = seq(frames)
@@ -99,7 +99,7 @@ def superpixel_transform(folder, filename, output_folder, write=False):
 def salt_transform(folder, filename, output_folder, write=False):
     frames, fps = video_loader(folder+"/"+filename)
     sometimes = lambda aug: va.Sometimes(1, aug)  # Used to apply augmentor with 100% probability
-    seq = va.Sequential([  # randomly rotates the video with a degree randomly choosen from [-10, 10]
+    seq = va.Sequential([
         sometimes(va.Salt())
     ])
     video_aug = seq(frames)
@@ -109,7 +109,7 @@ def salt_transform(folder, filename, output_folder, write=False):
 def pepper_transform(folder, filename, output_folder,write=False):
     frames, fps = video_loader(folder+"/"+filename)
     sometimes = lambda aug: va.Sometimes(1, aug)  # Used to apply augmentor with 100% probability
-    seq = va.Sequential([  # randomly rotates the video with a degree randomly choosen from [-10, 10]
+    seq = va.Sequential([
         sometimes(va.Pepper())
     ])
     video_aug = seq(frames)
@@ -119,7 +119,7 @@ def pepper_transform(folder, filename, output_folder,write=False):
 def add_transform(folder, filename, output_folder,write=False):
     frames, fps = video_loader(folder+"/"+filename)
     sometimes = lambda aug: va.Sometimes(1, aug)  # Used to apply augmentor with 100% probability
-    seq = va.Sequential([  # randomly rotates the video with a degree randomly choosen from [-10, 10]
+    seq = va.Sequential([
         sometimes(va.Add())
     ])
     video_aug = seq(frames)
@@ -129,7 +129,7 @@ def add_transform(folder, filename, output_folder,write=False):
 def multiply_transform(folder, filename, output_folder,write=False):
     frames, fps = video_loader(folder+"/"+filename)
     sometimes = lambda aug: va.Sometimes(1, aug)  # Used to apply augmentor with 100% probability
-    seq = va.Sequential([  # randomly rotates the video with a degree randomly choosen from [-10, 10]
+    seq = va.Sequential([
         sometimes(va.Multiply())
     ])
     video_aug = seq(frames)
