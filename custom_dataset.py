@@ -4,6 +4,9 @@ from torchvision import datasets
 from torchvision.transforms import ToTensor
 #import matplotlib.pyplot as plt
 
+#augmentors
+import vidaug.augmentors as va
+
 import os
 import pandas as pd
 #from torchvision.io import read_image
@@ -28,9 +31,16 @@ class CustomImageTrainDataset(Dataset):
         num_segments = 8 #may need to adjust
 
         frames = extract_frames(vid_path, num_segments)
+
+        sometimes = lambda aug: va.Sometimes(.1, aug)  # Used to apply augmentor with 100% probability
+        seq = va.Sequential([  # randomly rotates the video with a degree randomly choosen from [-10, 10]
+            sometimes(va.HorizontalFlip()),  # horizontally flip the video with 100% probability
+            sometimes(va.GaussianBlur())
+        ])
+        video_aug = seq(frames)
         #frames = extract_frames("videos/label_videos/excavating/excavating_2.mp4")
         #video = torch.stack([self.transform(frame) for frame in frames], 1).unsqueeze(0)
-        video = torch.stack([self.transform(frame) for frame in frames], 1)
+        video = torch.stack([self.transform(frame) for frame in video_aug], 1)
 
         label = self.vid_labels.iloc[idx, 1]
 

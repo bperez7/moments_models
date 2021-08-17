@@ -32,7 +32,7 @@ def video_loader(path):
     return frames, fps
 
 
-def color_invert_transform(folder, filename, output_folder):
+def color_invert_transform(folder, filename, output_folder, write=False):
     frames, fps = video_loader(folder + "/" + filename)
     sometimes = lambda aug: va.Sometimes(1, aug)  # Used to apply augmentor with 100% probability
     seq = va.Sequential([
@@ -40,81 +40,102 @@ def color_invert_transform(folder, filename, output_folder):
         sometimes(va.InvertColor())  # invert color
     ])
     video_aug = seq(frames)
-    write_video(video_aug, fps, output_folder, filename, augmentation_type="color_invert")
+    if write:
+        write_video(video_aug, fps, output_folder, filename, augmentation_type="color_invert")
+    return video_aug
 
-def horizontal_transform(folder, filename, output_folder):
+def horizontal_transform(folder, filename, output_folder, write=False):
     frames, fps = video_loader(folder+"/"+filename)
     sometimes = lambda aug: va.Sometimes(1, aug)  # Used to apply augmentor with 100% probability
     seq = va.Sequential([  # randomly rotates the video with a degree randomly choosen from [-10, 10]
         sometimes(va.HorizontalFlip())  # horizontally flip the video with 100% probability
     ])
     video_aug = seq(frames)
-    write_video(video_aug, fps, output_folder, filename, augmentation_type="horizontal")
+    if write:
+        write_video(video_aug, fps, output_folder, filename, augmentation_type="horizontal")
+    return video_aug
 
-def blur_transform(folder, filename, output_folder):
+def blur_transform(folder, filename, output_folder, write=False):
     frames, fps = video_loader(folder+"/"+filename)
     sometimes = lambda aug: va.Sometimes(1, aug)  # Used to apply augmentor with 100% probability
     seq = va.Sequential([  # randomly rotates the video with a degree randomly choosen from [-10, 10]
         sometimes(va.GaussianBlur())  #blurs
     ])
     video_aug = seq(frames)
-    write_video(video_aug, fps, output_folder, filename, augmentation_type="blur")
-def elastic_transform(folder, filename, output_folder):
+    if write:
+        write_video(video_aug, fps, output_folder, filename, augmentation_type="blur")
+    return video_aug
+def elastic_transform(folder, filename, output_folder, write=False):
     frames, fps = video_loader(folder+"/"+filename)
     sometimes = lambda aug: va.Sometimes(1, aug)  # Used to apply augmentor with 100% probability
     seq = va.Sequential([  # randomly rotates the video with a degree randomly choosen from [-10, 10]
         sometimes(va.ElasticTransformation())
     ])
     video_aug = seq(frames)
-    write_video(video_aug, fps, output_folder, filename, augmentation_type="elastic")
-def piecewise_affine_transform(folder, filename, output_folder):
+    if write:
+        write_video(video_aug, fps, output_folder, filename, augmentation_type="elastic")
+    return video_aug
+def piecewise_affine_transform(folder, filename, output_folder, write=False):
     frames, fps = video_loader(folder+"/"+filename)
     sometimes = lambda aug: va.Sometimes(1, aug)  # Used to apply augmentor with 100% probability
     seq = va.Sequential([  # randomly rotates the video with a degree randomly choosen from [-10, 10]
         sometimes(va.PiecewiseAffineTransform())
     ])
     video_aug = seq(frames)
-    write_video(video_aug, fps, output_folder, filename, augmentation_type="piecewise_affine")
-def superpixel_transform(folder, filename, output_folder):
+    if write:
+        write_video(video_aug, fps, output_folder, filename, augmentation_type="piecewise_affine")
+    return video_aug
+def superpixel_transform(folder, filename, output_folder, write=False):
     frames, fps = video_loader(folder+"/"+filename)
     sometimes = lambda aug: va.Sometimes(1, aug)  # Used to apply augmentor with 100% probability
     seq = va.Sequential([  # randomly rotates the video with a degree randomly choosen from [-10, 10]
         sometimes(va.Superpixel())  #blurs
     ])
     video_aug = seq(frames)
-    write_video(video_aug, fps, output_folder, filename, augmentation_type="superpixel")
-def salt_transform(folder, filename, output_folder):
+    if write:
+        write_video(video_aug, fps, output_folder, filename, augmentation_type="superpixel")
+    return video_aug
+
+def salt_transform(folder, filename, output_folder, write=False):
     frames, fps = video_loader(folder+"/"+filename)
     sometimes = lambda aug: va.Sometimes(1, aug)  # Used to apply augmentor with 100% probability
     seq = va.Sequential([  # randomly rotates the video with a degree randomly choosen from [-10, 10]
         sometimes(va.Salt())
     ])
     video_aug = seq(frames)
-    write_video(video_aug, fps, output_folder, filename, augmentation_type="salt")
-def pepper_transform(folder, filename, output_folder):
+    if write:
+        write_video(video_aug, fps, output_folder, filename, augmentation_type="salt")
+    return video_aug
+def pepper_transform(folder, filename, output_folder,write=False):
     frames, fps = video_loader(folder+"/"+filename)
     sometimes = lambda aug: va.Sometimes(1, aug)  # Used to apply augmentor with 100% probability
     seq = va.Sequential([  # randomly rotates the video with a degree randomly choosen from [-10, 10]
         sometimes(va.Pepper())
     ])
     video_aug = seq(frames)
-    write_video(video_aug, fps, output_folder, filename, augmentation_type="pepper")
-def add_transform(folder, filename, output_folder):
+    if write:
+        write_video(video_aug, fps, output_folder, filename, augmentation_type="pepper")
+    return video_aug
+def add_transform(folder, filename, output_folder,write=False):
     frames, fps = video_loader(folder+"/"+filename)
     sometimes = lambda aug: va.Sometimes(1, aug)  # Used to apply augmentor with 100% probability
     seq = va.Sequential([  # randomly rotates the video with a degree randomly choosen from [-10, 10]
         sometimes(va.Add())
     ])
     video_aug = seq(frames)
-    write_video(video_aug, fps, output_folder, filename, augmentation_type="add")
-def multiply_transform(folder, filename, output_folder):
+    if write:
+        write_video(video_aug, fps, output_folder, filename, augmentation_type="add")
+    return video_aug
+def multiply_transform(folder, filename, output_folder,write=False):
     frames, fps = video_loader(folder+"/"+filename)
     sometimes = lambda aug: va.Sometimes(1, aug)  # Used to apply augmentor with 100% probability
     seq = va.Sequential([  # randomly rotates the video with a degree randomly choosen from [-10, 10]
         sometimes(va.Multiply())
     ])
     video_aug = seq(frames)
-    write_video(video_aug, fps, output_folder, filename, augmentation_type="multiply")
+    if write:
+        write_video(video_aug, fps, output_folder, filename, augmentation_type="multiply")
+    return video_aug
 
 
 
