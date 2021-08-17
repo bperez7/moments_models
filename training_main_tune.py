@@ -90,6 +90,7 @@ def main():
 
     #Load resnet pretrained model
     model = models.load_model("resnet3d50")
+    model = model.cuda()
 
 
     #add layers to specify number of classes
