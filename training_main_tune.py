@@ -71,6 +71,7 @@ def main():
     eval_freq = hyperparameters["eval_freq"]
 
     num_class = hyperparameters["num_classes"]
+    batch_size = hyperparameters["batch_size"]
 
     output_model_name = config["misc"]["output_model_name"]
 
@@ -136,7 +137,7 @@ def main():
 
     train_loader = torch.utils.data.DataLoader(
         CustomImageTrainDataset(train_csv_path, videos_path),
-        batch_size=33,shuffle=True
+        batch_size=batch_size,shuffle=True
     )
 
     val_loader = torch.utils.data.DataLoader(
@@ -280,7 +281,7 @@ def main():
         pred_label = int(pred[0])
         training_pred_labels.append(pred_label)
 
-    print('Training Accuracy: ' + str(training_correct/33))
+    print('Training Accuracy: ' + str(training_correct/batch_size))
 
     val_correct = 0
     val_pred_labels = []
