@@ -14,8 +14,8 @@ from models import ResNet3D
 
 
 model_folder = "trained_models"
-model = models.load_model("resnet3d50")
-model_name = "model_debug.h5"
+model = ResNet3D()
+model_name = "model_debug.pth"
 model.load_state_dict(torch.load(model_folder+"/"+model_name))
 
 #model = torch.load(model_folder+"/"+model_name)
