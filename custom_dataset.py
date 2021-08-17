@@ -35,7 +35,7 @@ class CustomImageTrainDataset(Dataset):
         sometimes = lambda aug: va.Sometimes(.1, aug)  # Used to apply augmentor with 100% probability
         seq = va.Sequential([  # randomly rotates the video with a degree randomly choosen from [-10, 10]
             sometimes(va.HorizontalFlip()),  # horizontally flip the video with 100% probability
-            sometimes(va.GaussianBlur())
+            sometimes(va.GaussianBlur(sigma=1))
         ])
         video_aug = seq(frames)
         #frames = extract_frames("videos/label_videos/excavating/excavating_2.mp4")
