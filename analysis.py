@@ -7,8 +7,14 @@ import torch.backends.cudnn as cudnn
 import torch.optim
 from models import ResNet3D
 
+#TODO:
+# 1. Parallel bug (probably from input batch being size 1)
+#
+
+
+
 model_folder = "trained_models"
-model_name = "model_1.h5"
+model_name = "model_2.h5"
 model = torch.load(model_folder+"/"+model_name)
 #model = torch.nn.DataParallel(model, device_ids=[0,1]).cuda()
 model.eval()
@@ -120,7 +126,9 @@ with torch.no_grad():
         elif "loading" in test_input_file:
             if int(pred[0]) == 2:
                 val_correct += 1
-        print('Validation Accuracy: ' + str(val_correct / 9))
+        pred_label = int(pred[0])
+        val_pred_labels.append(pred_label)
+    print('Validation Accuracy: ' + str(val_correct / 9))
 
 
 

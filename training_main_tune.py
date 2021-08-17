@@ -40,6 +40,7 @@ TODO:
 1. Freeze layers 
 2. dimension differnece between TRN 
 3. Could need to fix format of videos to be recognized by ffmpeg (see localization error an label_videos)
+4. SAVING MODEL BUG and parallelization
 """
 
 def main():
@@ -97,7 +98,7 @@ def main():
 
 
     #For GPU parallelization
-    model = torch.nn.DataParallel(model, device_ids=[0,1]).cuda()
+    #model = torch.nn.DataParallel(model, device_ids=[0,1]).cuda()
 
     # #if args.resume:
     #     if os.path.isfile(args.resume):
@@ -195,7 +196,7 @@ def main():
     plt.plot(training_loss_list)
     plt.plot(val_loss_list)
 
-    torch.save(model, "trained_models/model_1.h5" )
+    torch.save(model, "trained_models/model_2.h5" )
 
     #test on training data
     #test_input_file = "videos/label_videos/excavating/excavating_1.mp4"
