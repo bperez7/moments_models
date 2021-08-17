@@ -165,7 +165,9 @@ class ResNet3D(nn.Module):
         x = self.avgpool(x)
 
         x = x.view(x.size(0), -1)
-        x = self.fc(x)
+        #modified
+        #x = self.fc(x)
+        x = self.last_linear(x)
 
         return x
 

@@ -40,7 +40,7 @@ TODO:
 1. Freeze layers 
 2. dimension differnece between TRN 
 3. Could need to fix format of videos to be recognized by ffmpeg (see localization error an label_videos)
-4. SAVING MODEL BUG and parallelization
+4. SAVING MODEL BUG and parallelization (REMOVE FC layer in models file?)
 """
 
 def main():
@@ -97,7 +97,7 @@ def main():
     #add layers to specify number of classes
     expansion = 4
     #model.fc = torch.nn.Linear(512 * expansion, 306)
-    model.fc = torch.nn.Linear(512*expansion, out_features=num_class)
+  #  model.fc = torch.nn.Linear(512*expansion, out_features=num_class)
     model.last_linear = torch.nn.Linear(in_features=512 * expansion, out_features=num_class, bias=True)
     #model = model.cuda()
 
