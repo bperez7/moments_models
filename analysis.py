@@ -110,6 +110,7 @@ with torch.no_grad():
 
        # target = target.cuda(async=True)
         target = target.long()
+        print(int(target))
         training_true_labels.append(int(target))
 
 
@@ -134,6 +135,7 @@ with torch.no_grad():
 
         # target = target.cuda(async=True)
         target = target.long()
+
         val_true_labels.append(int(target))
         # input = input.cuda()
         # input = input.cuda()
