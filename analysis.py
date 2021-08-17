@@ -123,7 +123,7 @@ with torch.no_grad():
         output = model(input_var)
         print(output)
         print(target)
-        training_pred_labels.append(int(output))
+        training_pred_labels.append(int(torch.argmax(output)))
 
 
     val_true_labels = []
@@ -142,7 +142,7 @@ with torch.no_grad():
         target_var = torch.autograd.Variable(target)
 
         output = model(input_var)
-        val_pred_labels.append(int(output))
+        val_pred_labels.append(int(torch.argmax(output)))
 
 
 
