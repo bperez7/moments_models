@@ -33,7 +33,7 @@ training_pred_labels = []
 
 val_true_labels = [0 for i in range(9)]
 val_true_labels[2:6] = [1 for i in range(2,6)]
-val_true_labels[6:] = [2 for i in range(6,10)]
+val_true_labels[6:] = [2 for i in range(6,9)]
 val_pred_labels = []
 
 all_train_input_files = ["bulldozing/bulldozing_2.mp4",
