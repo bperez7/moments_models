@@ -16,6 +16,7 @@ from models import ResNet3D
 model_folder = "trained_models"
 model_name = "model_debug.h5"
 model = torch.load(model_folder+"/"+model_name)
+model = model.cuda()
 #model = torch.nn.DataParallel(model, device_ids=[0,1]).cuda()
 model.eval()
 
@@ -75,6 +76,7 @@ with torch.no_grad():
         test_input_frames = extract_frames("videos/label_videos/" + test_input_file, 8)
         transform = models.load_transform()
         test_input = torch.stack([transform(frame) for frame in test_input_frames], 1).unsqueeze(0)
+        test_input = test_input.cuda()
         #test_input = torch.stack([transform(frame) for frame in test_input_frames], 1)
         print(test_input)
         test_output = model(test_input)
@@ -106,6 +108,7 @@ with torch.no_grad():
         test_input_frames = extract_frames("videos/label_videos/" + test_input_file, 8)
         transform = models.load_transform()
         test_input = torch.stack([transform(frame) for frame in test_input_frames], 1).unsqueeze(0)
+        test_input = test_input.cuda()
         test_output = model(test_input)
         print(test_input_file)
         print(test_output)
