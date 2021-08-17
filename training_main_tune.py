@@ -72,6 +72,8 @@ def main():
 
     num_class = hyperparameters["num_classes"]
 
+    output_model_name = hyperparameters["output_model_name"]
+
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -196,7 +198,7 @@ def main():
     plt.plot(training_loss_list)
     plt.plot(val_loss_list)
 
-    torch.save(model, "trained_models/model_2.h5" )
+    torch.save(model, "trained_models/"+output_model_name)
 
     #test on training data
     #test_input_file = "videos/label_videos/excavating/excavating_1.mp4"
