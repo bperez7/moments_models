@@ -91,18 +91,20 @@ def main():
 
     #Load resnet pretrained model
     model = models.load_model("resnet3d50")
-    model = model.cuda()
+
 
 
     #add layers to specify number of classes
     expansion = 4
     #model.fc = torch.nn.Linear(512 * expansion, 306)
-    model.last_linear = torch.nn.Linear(in_features=512 * expansion, out_features=num_class, bias=True).cuda()
+    model.last_linear = torch.nn.Linear(in_features=512 * expansion, out_features=num_class, bias=True)
+    #model = model.cuda()
+
    # print(model)
 
 
     #For GPU parallelization
-    #model = torch.nn.DataParallel(model, device_ids=[0,1]).cuda()
+    model = torch.nn.DataParallel(model, device_ids=[0,1]).cuda()
 
     # #if args.resume:
     #     if os.path.isfile(args.resume):
@@ -386,7 +388,7 @@ def train(train_loader, model, criterion, optimizer, epoch, log):
 
         target = target.cuda(async=True)
 
-        input = input.cuda()
+       # input = input.cuda()
         input_var = torch.autograd.Variable(input)
 
         target_var = torch.autograd.Variable(target)
