@@ -387,6 +387,7 @@ def train(train_loader, model, criterion, optimizer, epoch, log):
         data_time.update(time.time() - end)
 
         target = target.cuda(async=True)
+        target = target.long()
 
        # input = input.cuda()
         input_var = torch.autograd.Variable(input)
