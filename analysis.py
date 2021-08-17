@@ -82,6 +82,7 @@ with torch.no_grad():
         test_input = test_input.cuda()
         #test_input = torch.stack([transform(frame) for frame in test_input_frames], 1)
         print(test_input)
+        print(test_input.size())
         test_output = model(torch.tensor([test_input]))
         print(test_input_file)
         print(test_output)
