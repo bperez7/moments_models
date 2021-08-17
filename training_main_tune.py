@@ -28,7 +28,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import models
 
-from custom_dataset import CustomImageTrainDataset, CustomImageValDataset
+from custom_dataset import CustomImageTrainDataset, CustomImageTrainAugmentedDataset, CustomImageValDataset
 
 loss_list = []
 
@@ -38,9 +38,10 @@ os.environ['KMP_DUPLICATE_LIB_OK']='True'
 """
 TODO:
 1. Freeze layers 
-2. dimension differnece between TRN 
+2. dimension differnece between TRN (should be ok) 
 3. Could need to fix format of videos to be recognized by ffmpeg (see localization error an label_videos)
 4. SAVING MODEL BUG and parallelization (REMOVE FC layer in models file?)
+5. Save checkpoints
 """
 
 def main():
@@ -140,7 +141,7 @@ def main():
     videos_path = config["datasets"]["videos_path"]
 
     train_loader = torch.utils.data.DataLoader(
-        CustomImageTrainDataset(train_csv_path, videos_path),
+        CustomImageTrainAugmentedDataset(train_csv_path, videos_path),
         batch_size=batch_size,shuffle=True
     )
 
@@ -209,7 +210,7 @@ def main():
     #test on training data
     #test_input_file = "videos/label_videos/excavating/excavating_1.mp4"
     #test_input_file = "videos/label_videos/lowering/lowering_1.mp4"
-    
+
 #     test_input_file = config["datasets"]["debug_video"]
 #     all_train_input_files = ["bulldozing/bulldozing_2.mp4",
 # "bulldozing/bulldozing_3.mp4",
@@ -440,7 +441,7 @@ def train(train_loader, model, criterion, optimizer, epoch, log):
             print(output)
             log.write(output + '\n')
             log.flush()
-        return float(loss)
+    return float(loss)
 
 
 

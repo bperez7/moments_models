@@ -33,6 +33,7 @@ os.environ['KMP_DUPLICATE_LIB_OK']='True'
 4. FFMPEG error with labelled videos
 5. Uniformly sample frames to speed up prediction
 6. YOLO (try on gpu)
+7. config file for models, etc 
 """
 
 
@@ -154,9 +155,14 @@ class VideoCropTool:
 
         #models
         self.resnet_3d_model =  models.load_model('resnet3d50')
-        self.categories = models.load_categories('category_momentsv2.txt')
+        self.fine_tuned_model = torch.load('trained_models/model_debug.pth')
+        #self.categories = models.load_categories('category_momentsv2.txt')
+        self.categories = models.load_categories('dataset/machine_categories.txt')
         self.fast_rcnn = fasterrcnn_resnet50_fpn(pretrained=True)
         self.fast_mobile = None
+        self.yolo_model = torch.hub.load('ultralytics/yolov5', 'yolov5s', pretrained=True)
+        self.yolo_model.eval()
+
         self.fast_rcnn.eval()
 
 
@@ -586,7 +592,8 @@ class VideoCropTool:
                     #print(frame_tensor)
                     transformed_frame = self.det_transform(obj_pil_frame)
                     print(transformed_frame.size())
-                    obj_detect_result = self.fast_rcnn([self.det_transform(obj_pil_frame)])
+                    #obj_detect_result = self.fast_rcnn([self.det_transform(obj_pil_frame)])
+                    obj_detect_result = self.yolo_model([self.det_transform(obj_pil_frame)])
                     print(obj_detect_result)
                     obj_detection_time_end = time.time()
                     obj_detection_diff = obj_detection_time_start-obj_detection_time_end
@@ -637,7 +644,8 @@ class VideoCropTool:
 
                         with torch.no_grad():
                             print('start prediction')
-                            logits = self.resnet_3d_model(res_obj_input)
+                           # logits = self.resnet_3d_model(res_obj_input)
+                            logits = self.fine_tuned_model(res_obj_input)
                             print('end prediction')
                             h_x = F.softmax(logits, 1).mean(dim=0)
                             probs, idx = h_x.sort(0, True)
@@ -818,6 +826,7 @@ class VideoCropTool:
                         with torch.no_grad():
                             print('start prediction')
                             logits = self.resnet_3d_model(res_input)
+                           # logits = self.fine_tuned_model)(res_input)
                             print('end prediction')
                             h_x = F.softmax(logits, 1).mean(dim=0)
                             probs, idx = h_x.sort(0, True)
