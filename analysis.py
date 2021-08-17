@@ -115,6 +115,7 @@ with torch.no_grad():
 
        # input = input.cuda()
        # input = input.cuda()
+        input = input.cuda()
         input_var = torch.autograd.Variable(input)
 
         target_var = torch.autograd.Variable(target)
@@ -135,6 +136,7 @@ with torch.no_grad():
         val_true_labels.append(int(target))
         # input = input.cuda()
         # input = input.cuda()
+        input = input.cuda()
         input_var = torch.autograd.Variable(input)
 
         target_var = torch.autograd.Variable(target)
