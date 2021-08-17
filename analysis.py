@@ -14,11 +14,11 @@ from models import ResNet3D
 
 
 model_folder = "trained_models"
-model = ResNet3D()
+#model = ResNet3D()
 model_name = "model_debug.pth"
-model.load_state_dict(torch.load(model_folder+"/"+model_name))
+#model.load_state_dict(torch.load(model_folder+"/"+model_name))
 
-#model = torch.load(model_folder+"/"+model_name)
+model = torch.load(model_folder+"/"+model_name)
 model = model.cuda()
 #model = torch.nn.DataParallel(model, device_ids=[0,1]).cuda()
 model.eval()
@@ -82,7 +82,7 @@ with torch.no_grad():
         test_input = test_input.cuda()
         #test_input = torch.stack([transform(frame) for frame in test_input_frames], 1)
         print(test_input)
-        test_output = model(test_input)
+        test_output = model([test_input])
         print(test_input_file)
         print(test_output)
         # prec1, prec5 = accuracy(test_output.data, target, topk=(1, 2))
