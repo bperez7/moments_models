@@ -79,7 +79,7 @@ with torch.no_grad():
         test_input_frames = extract_frames("videos/label_videos/" + test_input_file, 8)
         transform = models.load_transform()
         test_input = torch.stack([transform(frame) for frame in test_input_frames], 1).unsqueeze(0)
-        test_input = torch.stack([transform(frame) for frame in test_input_frames], 1)
+        #test_input = torch.stack([transform(frame) for frame in test_input_frames], 1)
         test_input = test_input.cuda()
         #test_input = torch.stack([transform(frame) for frame in test_input_frames], 1)
         print(test_input)
