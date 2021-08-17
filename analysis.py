@@ -123,6 +123,7 @@ with torch.no_grad():
         output = model(input_var)
         print(output)
         print(target)
+        print(int(torch.argmax(output)))
         training_pred_labels.append(int(torch.argmax(output)))
 
 
