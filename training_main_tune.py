@@ -385,10 +385,13 @@ def train(train_loader, model, criterion, optimizer, epoch, log):
 
         target = target.cuda(async=True)
 
+        input = input.cuda()
+        input_var = torch.autograd.Variable(input)
 
-        input_var = torch.autograd.Variable(input).cuda()
+        target_var = torch.autograd.Variable(target)
 
-        target_var = torch.autograd.Variable(target).cuda()
+
+
 
         # compute output
         output = model(input_var)
