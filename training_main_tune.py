@@ -391,6 +391,7 @@ def train(train_loader, model, criterion, optimizer, epoch, log):
         target = target.long()
 
        # input = input.cuda()
+        input = input.cuda()
         input_var = torch.autograd.Variable(input)
 
         target_var = torch.autograd.Variable(target)
