@@ -460,6 +460,7 @@ def validate(val_loader, model, criterion, iter, log):
     for i, (input, target) in enumerate(val_loader):
         target = target.cuda(async=True)
         target = target.long()
+        input = input.cuda()
      #   input_var = torch.autograd.Variable(input, volatile=True)
         with torch.no_grad():
             input_var = input
