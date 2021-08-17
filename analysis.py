@@ -218,6 +218,8 @@ with torch.no_grad():
 y_true = []
 y_pred = []
 
+print(training_true_labels)
+print(training_pred_labels)
 training_cm = confusion_matrix(training_true_labels, training_pred_labels)
 val_cm = confusion_matrix(val_true_labels, val_pred_labels)
 
