@@ -82,7 +82,7 @@ with torch.no_grad():
         test_input = test_input.cuda()
         #test_input = torch.stack([transform(frame) for frame in test_input_frames], 1)
         print(test_input)
-        test_output = model([test_input])
+        test_output = model(torch.tensor([test_input]))
         print(test_input_file)
         print(test_output)
         # prec1, prec5 = accuracy(test_output.data, target, topk=(1, 2))
