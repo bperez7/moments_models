@@ -39,7 +39,7 @@ class CustomImageTrainDataset(Dataset):
             sometimes(va.ElasticTransformation()),
             sometimes(va.Salt()),
          #   sometimes(va.PiecewiseAffineTransform()),
-            sometimes(va.Superpixel()),
+         #   sometimes(va.Superpixel()),
             sometimes(va.Pepper()),
             sometimes(va.Add()),
             sometimes(va.Multiply())
