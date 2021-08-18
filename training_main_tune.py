@@ -107,8 +107,8 @@ def main():
 
 
     #For GPU parallelization
-   # model = torch.nn.DataParallel(model, device_ids=[0,1]).cuda()
-    model = model.cuda()
+    model = torch.nn.DataParallel(model, device_ids=[0,1]).cuda()
+   # model = model.cuda()
 
     # #if args.resume:
     #     if os.path.isfile(args.resume):
