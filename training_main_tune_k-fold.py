@@ -96,7 +96,7 @@ def main():
    # categories = ?  """TODO: fix categories"""
     categories = models.load_categories('dataset/machine_categories.txt')
   #  num_class = len(categories)
-  
+
 
 
     train_csv_path = config["datasets"]["training_csv"]
@@ -120,7 +120,7 @@ def main():
 
     all_training_losses = []
     all_val_losses = []
-    for (train_loader, val_loader) in dataloaders:
+    for (train_batch_loader, val_batch_loader) in dataloaders:
         # Load resnet pretrained model
         model = models.load_model("resnet3d50")
 
@@ -170,14 +170,14 @@ def main():
            adjust_learning_rate(optimizer, epoch, lr_steps)
 
             # train for one epoch
-           training_loss = train(train_loader, model, criterion, optimizer, epoch, log_training)
+           training_loss = train(train_batch_loader, model, criterion, optimizer, epoch, log_training)
            training_loss_list.append(training_loss)
 
             # evaluate on validation set
 
            if ((epoch+1)% eval_freq==0 or epoch == epochs-1):
                 #prec1 = validate(val_loader, model, criterion, (epoch + 1) * len(train_loader), log_training)
-                val_loss = validate(val_loader, model, criterion, (epoch + 1) * len(train_loader), log_training)
+                val_loss = validate(val_batch_loader, model, criterion, (epoch + 1) * len(train_batch_loader), log_training)
                 val_loss_list.append(val_loss)
                 val_epochs.append(epoch)
                 # remember best prec@1 and save checkpoint
@@ -265,19 +265,20 @@ def train(train_loader, model, criterion, optimizer, epoch, log):
     max_k = config["misc"]["topk"]
 
     end = time.time()
-    for i, (input, target) in enumerate(train_loader):
-        # measure data loading time
+    for batch in train_loader:
+        #for i, (input, target) in enumerate(train_loader):
+        for i, (input,target) in enumerate(batch):
+            # measure data loading time
+            data_time.update(time.time() - end)
 
-        data_time.update(time.time() - end)
+            target = target.cuda(async=True)
+            target = target.long()
 
-        target = target.cuda(async=True)
-        target = target.long()
+           # input = input.cuda()
+            input = input.cuda()
+            input_var = torch.autograd.Variable(input)
 
-       # input = input.cuda()
-        input = input.cuda()
-        input_var = torch.autograd.Variable(input)
-
-        target_var = torch.autograd.Variable(target)
+            target_var = torch.autograd.Variable(target)
 
 
 

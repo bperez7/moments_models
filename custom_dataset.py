@@ -173,7 +173,7 @@ class MachineTotalDataset(Dataset):
 
     def __getitem__(self, idx):
         print(idx)
-        
+
         vid_path = os.path.join(self.vid_dir, self.vid_labels.iloc[idx, 0])
 
         #image = read_image(vid_path)
