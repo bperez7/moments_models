@@ -33,7 +33,7 @@ class MachineTotalDataset(Dataset):
 
     def __getitem__(self, idx):
         print(idx)
-        return
+
 
 
         vid_path = os.path.join(self.vid_dir, self.vid_labels.iloc[idx, 0])
@@ -90,6 +90,7 @@ class VideoBatchSampler(BatchSampler):
         batch = []
 
         for image_id in self.sampler:
+            print(image_id)
             for i in range(self.aug_count):
                 batch.append(image_id)
             if len(batch) == self.batch_size:
