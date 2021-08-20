@@ -112,7 +112,7 @@ def main():
         splits.append((train_idx, test_idx))
     print(splits)
 
-    dataset = MachineTotalDataset('dataset/all_labels.csv', vid_dir='videos/label_videos')
+    dataset = MachineTotalDataset('dataset/all_labels.csv',batch_size=batch_size, vid_dir='videos/label_videos')
 
     dataloaders = get_all_split_loaders(dataset, splits, aug_count=1, batch_size=10)
 
@@ -265,6 +265,7 @@ def train(train_loader, model, criterion, optimizer, epoch, log):
     max_k = config["misc"]["topk"]
 
     end = time.time()
+    print(train_loader)
     for batch in train_loader:
         #for i, (input, target) in enumerate(train_loader):
         for i, (input,target) in enumerate(batch):
