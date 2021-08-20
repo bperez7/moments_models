@@ -112,9 +112,9 @@ def main():
         splits.append((train_idx, test_idx))
     print(splits)
 
-    dataset = MachineTotalDataset('dataset/all_labels.csv',batch_size=batch_size, vid_dir='videos/label_videos')
+    dataset = MachineTotalDataset('dataset/all_labels.csv', vid_dir='videos/label_videos')
 
-    dataloaders = get_all_split_loaders(dataset, splits, aug_count=1, batch_size=10)
+    dataloaders = get_all_split_loaders(dataset, splits, aug_count=1, batch_size=batch_size)
 
     k_count = 0
 
