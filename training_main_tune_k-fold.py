@@ -270,24 +270,26 @@ def train(train_loader, model, criterion, optimizer, epoch, log):
         #for i, (input, target) in enumerate(train_loader):
         print('batch')
         print(batch)
-        for i, (input,target) in enumerate(zip(batch)):
-            # measure data loading time
-            data_time.update(time.time() - end)
+        # for i, (input,target) in enumerate(zip(batch)):
+        #     # measure data loading time
+        #     data_time.update(time.time() - end)
+        #
+        #     target = target.cuda(async=True)
+        #     target = target.long()
+        #
+        #    # input = input.cuda()
+        #     input = input.cuda()
+        #     input_var = torch.autograd.Variable(input)
+        #
+        #     target_var = torch.autograd.Variable(target)
 
-            target = target.cuda(async=True)
-            target = target.long()
-
-           # input = input.cuda()
-            input = input.cuda()
-            input_var = torch.autograd.Variable(input)
-
-            target_var = torch.autograd.Variable(target)
-
-
+        batch = batch.cuda()
 
 
         # compute output
-        output = model(input_var)
+        output = model(batch)
+       # output = model(input_var)
+
         loss = criterion(output, target_var)
         print(loss)
 
