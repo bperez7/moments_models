@@ -35,8 +35,8 @@ class MachineTotalDataset(Dataset):
         print(idx)
 
 
-
-        vid_path = os.path.join(self.vid_dir, self.vid_labels.iloc[idx, 0])
+        vid_path = "videos/label_videos/bulldozing/bulldozing_2.mp4"
+        #vid_path = os.path.join(self.vid_dir, self.vid_labels.iloc[idx, 0])
 
         #image = read_image(vid_path)
         num_segments = 8 #may need to adjust
