@@ -41,7 +41,7 @@ class MachineTotalDataset(Dataset):
         #vid_path = os.path.join(self.vid_dir, self.vid_labels.iloc[idx, 0])
         vid_path = os.path.join(self.vid_dir, vid_id)
         self.vid_labels
-        label = np.array(self.vid_labels[self.vid_labels['image_id']] == vid_id['label'].values[0])
+        label = np.array(self.vid_labels[self.vid_labels['video_id']] == vid_id['label'].values[0])
 
         #image = read_image(vid_path)
         num_segments = 8 #may need to adjust
