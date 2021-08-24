@@ -33,11 +33,7 @@ class MachineTotalDataset(Dataset):
         return len(self.vid_labels)
 
     def __getitem__(self, idx):
-        print('getting item')
-        print(idx)
-
-
-       # vid_path = "videos/label_videos/bulldozing/bulldozing_2.mp4"
+     
         vid_path = os.path.join(self.vid_dir, self.vid_labels.iloc[idx, 0])
         #vid_path = os.path.join(self.vid_dir, vid_id)
         #self.vid_labels
