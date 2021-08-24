@@ -268,6 +268,8 @@ def train(train_loader, model, criterion, optimizer, epoch, log):
     print(train_loader)
     for batch in train_loader:
         #for i, (input, target) in enumerate(train_loader):
+        print('batch')
+        print(batch)
         for i, (input,target) in enumerate(batch):
             # measure data loading time
             data_time.update(time.time() - end)
