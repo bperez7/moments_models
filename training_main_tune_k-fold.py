@@ -266,7 +266,7 @@ def train(train_loader, model, criterion, optimizer, epoch, log):
 
     end = time.time()
     print(train_loader)
-    for batch in train_loader:
+    for i, batch in enumerate(train_loader):
         #for i, (input, target) in enumerate(train_loader):
 
 
@@ -299,9 +299,9 @@ def train(train_loader, model, criterion, optimizer, epoch, log):
 
         # measure accuracy and record loss
         prec1, prec_k = accuracy(output.data, target_var, topk=(1,max_k))
-        losses.update(loss.data, input.size(0))
-        top1.update(prec1, input.size(0))
-        topK.update(prec_k, input.size(0))
+        losses.update(loss.data, input_var.size(0))
+        top1.update(prec1, input_var.size(0))
+        topK.update(prec_k, input_var.size(0))
 
 
         # compute gradient and do SGD step
