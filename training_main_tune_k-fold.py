@@ -315,19 +315,19 @@ def train(train_loader, model, criterion, optimizer, epoch, log):
         batch_time.update(time.time() - end)
         end = time.time()
 
-        if i % print_freq == 0:
+       # if i % print_freq == 0:
 
-            output = ('Epoch: [{0}][{1}/{2}], lr: {lr:.5f}\t'
-                    'Time {batch_time.val:.3f} ({batch_time.avg:.3f})\t'
-                    'Data {data_time.val:.3f} ({data_time.avg:.3f})\t'
-                    'Loss {loss.val:.4f} ({loss.avg:.4f})\t'
-                    'Prec@1 {top1.val:.3f} ({top1.avg:.3f})\t'
-                    'Prec@K {topK.val:.3f} ({topK.avg:.3f})'.format(
-                        epoch, i, len(train_loader), batch_time=batch_time,
-                        data_time=data_time, loss=losses, top1=top1, topK=topK, lr=optimizer.param_groups[-1]['lr']))
-            print(output)
-            log.write(output + '\n')
-            log.flush()
+        output = ('Epoch: [{0}][{1}/{2}], lr: {lr:.5f}\t'
+                'Time {batch_time.val:.3f} ({batch_time.avg:.3f})\t'
+                'Data {data_time.val:.3f} ({data_time.avg:.3f})\t'
+                'Loss {loss.val:.4f} ({loss.avg:.4f})\t'
+                'Prec@1 {top1.val:.3f} ({top1.avg:.3f})\t'
+                'Prec@K {topK.val:.3f} ({topK.avg:.3f})'.format(
+                    epoch, i, len(train_loader), batch_time=batch_time,
+                    data_time=data_time, loss=losses, top1=top1, topK=topK, lr=optimizer.param_groups[-1]['lr']))
+        print(output)
+        log.write(output + '\n')
+        log.flush()
     return float(loss)
 
 
@@ -349,7 +349,9 @@ def validate(val_loader, model, criterion, iter, log):
     max_k = config["misc"]["topk"]
 
     end = time.time()
-    for i, (input, target) in enumerate(val_loader):
+    for i, batch in enumerate(val_loader):
+        input = batch[0]
+        target=batch[1]
         target = target.cuda(async=True)
         target = target.long()
         input = input.cuda()
@@ -374,17 +376,17 @@ def validate(val_loader, model, criterion, iter, log):
         batch_time.update(time.time() - end)
         end = time.time()
 
-        if i % print_freq == 0:
-            output = ('Test: [{0}/{1}]\t'
-                  'Time {batch_time.val:.3f} ({batch_time.avg:.3f})\t'
-                  'Loss {loss.val:.4f} ({loss.avg:.4f})\t'
-                  'Prec@1 {top1.val:.3f} ({top1.avg:.3f})\t'
-                  'Prec@K {topK.val:.3f} ({topK.avg:.3f})'.format(
-                   i, len(val_loader), batch_time=batch_time, loss=losses,
-                   top1=top1, topK=topK))
-            print(output)
-            log.write(output + '\n')
-            log.flush()
+       # if i % print_freq == 0:
+        output = ('Test: [{0}/{1}]\t'
+              'Time {batch_time.val:.3f} ({batch_time.avg:.3f})\t'
+              'Loss {loss.val:.4f} ({loss.avg:.4f})\t'
+              'Prec@1 {top1.val:.3f} ({top1.avg:.3f})\t'
+              'Prec@K {topK.val:.3f} ({topK.avg:.3f})'.format(
+               i, len(val_loader), batch_time=batch_time, loss=losses,
+               top1=top1, topK=topK))
+        print(output)
+        log.write(output + '\n')
+        log.flush()
 
     output = ('Testing Results: Prec@1 {top1.avg:.3f} Prec@5 {topK.avg:.3f} Loss {loss.avg:.5f}'
           .format(top1=top1, topK=topK, loss=losses))
