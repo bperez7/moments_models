@@ -32,6 +32,7 @@ class MachineTotalDataset(Dataset):
         return len(self.vid_labels)
 
     def __getitem__(self, idx):
+        print('getting item')
         print(idx)
 
 
