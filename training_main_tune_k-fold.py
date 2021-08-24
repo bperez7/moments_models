@@ -268,8 +268,10 @@ def train(train_loader, model, criterion, optimizer, epoch, log):
     print(train_loader)
     for batch in train_loader:
         #for i, (input, target) in enumerate(train_loader):
-        print('batch')
-        print(batch)
+
+
+        #sprint('batch')
+        #print(batch)
         # for i, (input,target) in enumerate(zip(batch)):
         #     # measure data loading time
         #     data_time.update(time.time() - end)
@@ -296,7 +298,7 @@ def train(train_loader, model, criterion, optimizer, epoch, log):
 
 
         # measure accuracy and record loss
-        prec1, prec_k = accuracy(output.data, target, topk=(1,max_k))
+        prec1, prec_k = accuracy(output.data, target_var, topk=(1,max_k))
         losses.update(loss.data, input.size(0))
         top1.update(prec1, input.size(0))
         topK.update(prec_k, input.size(0))
