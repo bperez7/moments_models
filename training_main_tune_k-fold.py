@@ -283,13 +283,14 @@ def train(train_loader, model, criterion, optimizer, epoch, log):
         #
         #     target_var = torch.autograd.Variable(target)
 
-        batch = batch.cuda()
+        #batch = batch.cuda()
 
 
         # compute output
-        output = model(batch)
+        input_var = batch[0].cuda()
+        output = model(batch[0].cuda())
        # output = model(input_var)
-
+        target_var = torch.autograd.Variable(batch[1].cuda())
         loss = criterion(output, target_var)
         print(loss)
 
