@@ -32,17 +32,17 @@ class MachineTotalDataset(Dataset):
     def __len__(self):
         return len(self.vid_labels)
 
-    def __getitem__(self, vid_id):
+    def __getitem__(self, idx):
         print('getting item')
-        print(vid_id)
+        print(idx)
 
 
        # vid_path = "videos/label_videos/bulldozing/bulldozing_2.mp4"
-        #vid_path = os.path.join(self.vid_dir, self.vid_labels.iloc[idx, 0])
-        vid_path = os.path.join(self.vid_dir, vid_id)
-        self.vid_labels
-        print(self.vid_labels[self.vid_labels['video_id']] == vid_id['label'].values)
-        label = np.array(self.vid_labels[self.vid_labels['video_id']] == vid_id['label'].values[0])
+        vid_path = os.path.join(self.vid_dir, self.vid_labels.iloc[idx, 0])
+        #vid_path = os.path.join(self.vid_dir, vid_id)
+        #self.vid_labels
+        #print(self.vid_labels[self.vid_labels['video_id']] == vid_id['label'].values)
+        #label = np.array(self.vid_labels[self.vid_labels['video_id']] == vid_id['label'].values[0])
 
         #image = read_image(vid_path)
         num_segments = 8 #may need to adjust
@@ -54,7 +54,7 @@ class MachineTotalDataset(Dataset):
         #video = torch.stack([self.transform(frame) for frame in frames], 1).unsqueeze(0)
         video = torch.stack([self.transform(frame) for frame in frames], 1)
 
-       # label = self.vid_labels.iloc[idx, 1]
+        label = self.vid_labels.iloc[idx, 1]
 
         #if self.transform:
         #    image = self.transform(image)
@@ -74,9 +74,10 @@ class VideoSampler(Sampler):
         self.df_images = pd.read_csv(data_source)
 
     def __iter__(self):
-        vid_ids = self.df_images['video_id'].loc[self.sample_idx]
+        #vid_ids = self.df_images['video_id'].loc[self.sample_idx]
         #ids = self.df_images.iloc[:,0].loc[self.sample_idx]
-        return iter(vid_ids)
+        #return iter(vid_ids)
+        return iter(self.sample_idx)
 
     def __len__(self):
         return len(self.sample_idx)
