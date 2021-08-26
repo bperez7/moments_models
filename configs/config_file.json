@@ -1,4 +1,8 @@
 {
+
+    "general": {
+        "model_type": "r2_1d"
+    },
     "hyperparameters": {
         "lr": 0.0008,
         "lr_steps": [50,100],
@@ -24,7 +28,7 @@
     },
     "misc": {
         "topk": 3,
-        "output_model_name": "model_debug.h5"
+        "output_model_name": "model_debug.pth"
 
     }
 }

@@ -1,22 +1,27 @@
 {
 
     "modes": {
+      "modality": "label",
+      "write_video": true,
       "trn": false,
       "multi_label": false,
-      "tsm_mode": false
+      "tsm_mode": false,
+      "background_subtract": false
+
 
 
     },
     "file_paths": {
-      "video_file_path": "machine_videos/machine/loading/BD9f.mp4",
-      "output_file": "testing",
-      "output_folder": "trimmed_videos",
-      "output_label": "loading"
+      "video_file_path": "videos/yt8m_video_library/constructions/group_15/P8bG.mp4",
+      "output_file": "bulldozing_17",
+      "output_folder": "label_videos",
+      "output_label": "bulldozing"
 
     },
 
     "parameters": {
-      "video_start_time": 190
+      "video_start_time": 240
+
 
     }
 

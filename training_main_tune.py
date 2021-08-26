@@ -14,6 +14,8 @@ from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 
 
 
+
+
 # from dataset import TSNDataSet
 # from models import TSN
 # from transforms import *
@@ -30,6 +32,8 @@ import models
 
 from custom_dataset import CustomImageTrainDataset, CustomImageTrainAugmentedDataset, CustomImageValDataset
 
+from model_zoo.model_builder import build_model_no_args
+
 loss_list = []
 
 best_prec1 = 0
@@ -43,6 +47,10 @@ TODO:
 4. SAVING MODEL BUG and parallelization (REMOVE FC layer in models file?)
 5. Save checkpoints
 """
+
+
+
+
 
 def main():
     global lr_steps, start_epoch, epochs, eval_freq, lr, momentum, weight_decay, print_freq
@@ -76,6 +84,8 @@ def main():
 
     output_model_name = config["misc"]["output_model_name"]
 
+    model_type = config["general"]["model_type"]
+
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -92,16 +102,27 @@ def main():
 
 
     #Load resnet pretrained model
-    model = models.load_model("resnet3d50")
+    if model_type=="resnet3d":
+        model = models.load_model("resnet3d50")
+        # add layers to specify number of classes
+        expansion = 4
+        # model.fc = torch.nn.Linear(512 * expansion, 306)
+        #  model.fc = torch.nn.Linear(512*expansion, out_features=num_class)
+        model.last_linear = torch.nn.Linear(in_features=512 * expansion, out_features=num_class, bias=True)
+        # model = model.cuda()
+    elif model_type=="r2_1d":
+        pretrained_r2_1d = torch.load('pretrained_models/model_best_r2_1d.pth.tar', map_location=torch.device('cpu'))
+        r2_1d_dict = pretrained_r2_1d['state_dict']
+        # print(r2_1d_dict)
+        # model.load_state_dict(new_dict, strict=False)
+        r2_1d_model = build_model_no_args(test_mode=True)
+        r2_1d_model.load_state_dict(r2_1d_dict, strict=False)
+        model = r2_1d_model
+        print(model)
+
+        #self.categories = models.load_categories('category_momentsv2.txt')
 
 
-
-    #add layers to specify number of classes
-    expansion = 4
-    #model.fc = torch.nn.Linear(512 * expansion, 306)
-  #  model.fc = torch.nn.Linear(512*expansion, out_features=num_class)
-    model.last_linear = torch.nn.Linear(in_features=512 * expansion, out_features=num_class, bias=True)
-    #model = model.cuda()
 
    # print(model)
 

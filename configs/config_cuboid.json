@@ -1,0 +1,31 @@
+{
+
+    "modes": {
+      "trn": false,
+      "multi_label": false,
+      "tsm_mode": false,
+      "obj_detection_model": "detecto",
+      "background_subtraction": false,
+      "action_recognition_model": "fine-tune-resnet3d",
+      "categories": "fine_tune"
+
+
+    },
+
+    "file_paths": {
+      "video_file_path": "machine_videos/machine/excavating/6Hdj.mp4",
+      "output_file": "fine_tuning_testing",
+      "output_folder": "trial_videos"
+
+    },
+
+    "parameters": {
+      "video_start_time": 0,
+      "max_number_of_objects": 4,
+      "allow_overlapping_bboxes": false,
+      "bbox_expansion_factor": 0.8
+
+    }
+
+
+}
