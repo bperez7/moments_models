@@ -14,8 +14,7 @@
         "print_freq": 1,
         "eval_freq": 2,
         "num_classes": 3,
-        "optimizer": "sgd",
-
+        "optimizer": "sgd"
 
     },
 
