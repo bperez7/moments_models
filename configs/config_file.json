@@ -28,7 +28,7 @@
     },
     "misc": {
         "topk": 3,
-        "output_model_name": "model_debug.pth"
+        "output_model_name": "model_debug"
 
     }
 }

@@ -190,7 +190,7 @@ def main():
                 #     'best_prec1': best_prec1,
                 # }, is_best)
         #save model every k cycle
-        torch.save(model, "trained_models/" + output_model_name+"k-"+str(k_count))
+        torch.save(model, "trained_models/" + output_model_name+"k-"+str(k_count)+".pth")
         k_count+=1
 
         print("Losses per epoch: ")
