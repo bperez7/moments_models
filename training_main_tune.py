@@ -121,7 +121,7 @@ def main():
         r2_1d_model.load_state_dict(r2_1d_dict, strict=False)
         model = r2_1d_model
         print(model)
-        model.last_linear = torch.nn.Linear(in_features=512 * expansion, out_features=num_class, bias=True)
+        model.linear = torch.nn.Linear(in_features=512 * expansion, out_features=num_class, bias=True)
 
         #self.categories = models.load_categories('category_momentsv2.txt')
 
