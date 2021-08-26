@@ -84,8 +84,12 @@ def main():
 
     output_model_name = config["misc"]["output_model_name"]
 
+    k_fold_number = config["misc"]["k-fold"]
+
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+
 
 
     global args, best_prec1
@@ -103,7 +107,7 @@ def main():
     val_csv_path = config["datasets"]["val_csv"]
     videos_path = config["datasets"]["videos_path"]
 
-    splitter = StratifiedKFold(n_splits=4, shuffle=True, random_state=0)
+    splitter = StratifiedKFold(n_splits=k_fold_number, shuffle=True, random_state=0)
 
     df_train = pd.read_csv('dataset/all_labels.csv')
 
