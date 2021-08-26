@@ -14,7 +14,8 @@
         "print_freq": 1,
         "eval_freq": 2,
         "num_classes": 3,
-        "optimizer": "sgd"
+        "optimizer": "sgd",
+
 
     },
 
@@ -28,7 +29,8 @@
     },
     "misc": {
         "topk": 3,
-        "output_model_name": "model_debug"
+        "output_model_name": "model_debug",
+        "k-fold": 3
 
     }
 }
