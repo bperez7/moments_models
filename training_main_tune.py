@@ -113,12 +113,15 @@ def main():
     elif model_type=="r2_1d":
         pretrained_r2_1d = torch.load('pretrained_models/model_best_r2_1d.pth.tar', map_location=torch.device('cpu'))
         r2_1d_dict = pretrained_r2_1d['state_dict']
+        expansion=4 #?
+        #num_class =
         # print(r2_1d_dict)
         # model.load_state_dict(new_dict, strict=False)
         r2_1d_model = build_model_no_args(test_mode=True)
         r2_1d_model.load_state_dict(r2_1d_dict, strict=False)
         model = r2_1d_model
         print(model)
+        model.last_linear = torch.nn.Linear(in_features=512 * expansion, out_features=num_class, bias=True)
 
         #self.categories = models.load_categories('category_momentsv2.txt')
 
