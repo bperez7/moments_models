@@ -225,7 +225,7 @@ def main():
                 print(output)
                 #print(target)
                 print([int(torch.argmax(o)) for o in output])
-                training_pred_labels + [int(torch.argmax(o)) for o in output]
+                training_pred_labels+=[int(torch.argmax(o)) for o in output]
             print("Training accuracy for k-count "+str(k_count))
             acc_count = 0
             print('lengths')
@@ -254,7 +254,7 @@ def main():
                 # input = input.cuda()
                 input_var = batch[0].cuda()
                 target_var = torch.autograd.Variable(batch[1].cuda())
-                val_true_labels + [int(var) for var in target_var]
+                val_true_labels += [int(var) for var in target_var]
                # input = input.cuda()
                # input_var = torch.autograd.Variable(input)
 
