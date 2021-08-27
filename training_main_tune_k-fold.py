@@ -124,6 +124,11 @@ def main():
 
     all_training_losses = []
     all_val_losses = []
+
+
+    #start file
+    f = open("K-Fold_results.txt", "w")
+    f.close()
     for (train_batch_loader, val_batch_loader) in dataloaders:
         # Load resnet pretrained model
         model = models.load_model("resnet3d50")
@@ -216,21 +221,17 @@ def main():
                 input_var = batch[0].cuda()
                 # output = model(input_var)
                 target_var = torch.autograd.Variable(batch[1].cuda())
-                print('target')
-                print(target_var)
-                print([int(var) for var in target_var])
+
                 training_true_labels += [int(var) for var in target_var]
 
                 output = model(input_var)
-                print(output)
+
                 #print(target)
-                print([int(torch.argmax(o)) for o in output])
+
                 training_pred_labels+=[int(torch.argmax(o)) for o in output]
             print("Training accuracy for k-count "+str(k_count))
             acc_count = 0
-            print('lengths')
-            print(len(training_true_labels))
-            print(len(training_pred_labels))
+
 
             for i in range(len(training_true_labels)):
                 if training_true_labels[i]==training_pred_labels[i]:
@@ -262,7 +263,7 @@ def main():
 
                 output = model(input_var)
 
-                print([int(torch.argmax(o)) for o in output])
+
                 val_pred_labels+=[int(torch.argmax(o)) for o in output]
 
             acc_count=0
@@ -270,14 +271,25 @@ def main():
                 if val_true_labels[i]==val_pred_labels[i]:
                     acc_count+=1
             val_accuracy = acc_count/len(training_true_labels)
-            print("Validation accuracy for k-count " + str(k_count))
+            print("Testing accuracy for k-count " + str(k_count))
             print(val_accuracy)
 
             training_cm = confusion_matrix(training_true_labels, training_pred_labels)
             val_cm = confusion_matrix(val_true_labels, val_pred_labels)
-
+            print("Training Confusion Matrix")
             print(training_cm)
+            print("Testing Confusion Matrix")
             print(val_cm)
+
+            f = open("K-Fold_results.txt", "a")
+            f.write("Results for fold "+str(k_count))
+            f.write("Training Accuracy: "+ str(training_accuracy))
+            f.write("Training Confusion Matrix")
+            f.write(training_cm)
+            f.write("Testing Accuracy"+str(val_accuracy))
+            f.write(val_cm)
+            f.close()
+
 
             #write results to file
 
