@@ -195,6 +195,79 @@ def main():
                 # }, is_best)
         #save model every k cycle
         torch.save(model, "trained_models/" + output_model_name+"_k-"+str(k_count)+".pth")
+
+        with torch.no_grad():
+            training_correct = 0
+
+            training_true_labels = []
+            training_pred_labels = []
+
+            for i, batch in enumerate(train_batch_loader):
+                # measure data loading time
+
+                # target = target.cuda(async=True)
+                # target = target.long()
+                # print(int(target))
+
+
+
+                input_var = batch[0].cuda()
+                # output = model(input_var)
+                target_var = torch.autograd.Variable(batch[1].cuda())
+                training_true_labels + list(int(target_var))
+
+                output = model(input_var)
+                print(output)
+                #print(target)
+                print(int(torch.argmax(output)))
+                training_pred_labels + list(int(torch.argmax(output)))
+            print("Training accuracy for k-count "+str(k_count))
+            acc_count = 0
+            for i in range(len(training_true_labels)):
+                if training_true_labels[i]==training_pred_labels[i]:
+                    acc_count+=1
+            training_accuracy = acc_count/len(training_true_labels)
+            print(training_accuracy)
+
+
+
+
+            val_true_labels = []
+            val_pred_labels = []
+            for i, batch in enumerate(val_batch_loader):
+                # measure data loading time
+
+                # target = target.cuda(async=True)
+
+
+
+                # input = input.cuda()
+                # input = input.cuda()
+                input_var = batch[0].cuda()
+                target_var = torch.autograd.Variable(batch[1].cuda())
+                val_true_labels + list(int(target_var))
+               # input = input.cuda()
+               # input_var = torch.autograd.Variable(input)
+
+              #  target_var = torch.autograd.Variable(target)
+
+                output = model(input_var)
+                val_pred_labels + list(int(torch.argmax(output)))
+            acc_count=0
+            for i in range(len(val_true_labels)):
+                if val_true_labels[i]==val_pred_labels[i]:
+                    acc_count+=1
+            val_accuracy = acc_count/len(training_true_labels)
+            print("Validation accuracy for k-count " + str(k_count))
+            print(val_accuracy)
+
+            training_cm = confusion_matrix(training_true_labels, training_pred_labels)
+            val_cm = confusion_matrix(val_true_labels, val_pred_labels)
+
+            print(training_cm)
+            print(val_cm)
+
+
         k_count+=1
 
         print("Losses per epoch: ")
@@ -207,7 +280,7 @@ def main():
     plt.ylabel('Loss')
     for i in range(k_count):
         plt.plot(training_loss_list)
-        plt.savefig('train_losses_plot_k-'+str(k_count)+'.png')
+    plt.savefig('train_losses_plot.png')
     plt.close()
 
     #validation plot
@@ -217,7 +290,7 @@ def main():
     for i in range(k_count):
         plt.plot(val_epochs,val_loss_list)
 
-        plt.savefig('val_losses_plot_k-'+str(k_count)+'.png')
+    plt.savefig('val_losses_plot.png')
     plt.close()
 
 
