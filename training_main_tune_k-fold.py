@@ -219,8 +219,8 @@ def main():
                 output = model(input_var)
                 print(output)
                 #print(target)
-                print(int(torch.argmax(output)))
-                training_pred_labels + list(int(torch.argmax(output)))
+                print([int(torch.argmax(o) for o in output)])
+                training_pred_labels + [int(torch.argmax(o) for o in output)]
             print("Training accuracy for k-count "+str(k_count))
             acc_count = 0
             for i in range(len(training_true_labels)):
@@ -252,7 +252,10 @@ def main():
               #  target_var = torch.autograd.Variable(target)
 
                 output = model(input_var)
-                val_pred_labels + list(int(torch.argmax(output)))
+
+                print([int(torch.argmax(o) for o in output)])
+                val_pred_labels + [int(torch.argmax(o) for o in output)]
+
             acc_count=0
             for i in range(len(val_true_labels)):
                 if val_true_labels[i]==val_pred_labels[i]:
