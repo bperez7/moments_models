@@ -220,7 +220,7 @@ def main():
                 print(output)
                 #print(target)
                 print([int(torch.argmax(o)) for o in output])
-                training_pred_labels + [int(torch.argmax(o) for o in output)]
+                training_pred_labels + [int(torch.argmax(o)) for o in output]
             print("Training accuracy for k-count "+str(k_count))
             acc_count = 0
             for i in range(len(training_true_labels)):
