@@ -228,6 +228,10 @@ def main():
                 training_pred_labels + [int(torch.argmax(o)) for o in output]
             print("Training accuracy for k-count "+str(k_count))
             acc_count = 0
+            print('lengths')
+            print(len(training_true_labels))
+            print(len(training_pred_labels))
+
             for i in range(len(training_true_labels)):
                 if training_true_labels[i]==training_pred_labels[i]:
                     acc_count+=1
