@@ -214,7 +214,7 @@ def main():
                 input_var = batch[0].cuda()
                 # output = model(input_var)
                 target_var = torch.autograd.Variable(batch[1].cuda())
-                training_true_labels + list(int(target_var))
+                training_true_labels + [int(var) for var in target_var]
 
                 output = model(input_var)
                 print(output)
@@ -245,7 +245,7 @@ def main():
                 # input = input.cuda()
                 input_var = batch[0].cuda()
                 target_var = torch.autograd.Variable(batch[1].cuda())
-                val_true_labels + list(int(target_var))
+                val_true_labels + [int(var) for var in target_var]
                # input = input.cuda()
                # input_var = torch.autograd.Variable(input)
 
