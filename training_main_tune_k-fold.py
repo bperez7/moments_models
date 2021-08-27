@@ -41,14 +41,15 @@ loss_list = []
 best_prec1 = 0
 
 os.environ['KMP_DUPLICATE_LIB_OK']='True'
-"""
-TODO:
-1. Freeze layers 
-2. dimension differnece between TRN (should be ok) 
-3. Could need to fix format of videos to be recognized by ffmpeg (see localization error an label_videos)
-4. SAVING MODEL BUG and parallelization (REMOVE FC layer in models file?)
-5. Save checkpoints
-"""
+
+# TODO:
+#  1. Freeze layers
+#  2. dimension differnece between TRN (should be ok)
+#  3. Could need to fix format of videos to be recognized by ffmpeg (see localization error an label_videos)
+#  4. SAVING MODEL BUG and parallelization (REMOVE FC layer in models file?)
+#  5. Save checkpoints
+#  6. Variable ratios for k-splits (not just 50/50)
+#
 
 
 
@@ -283,6 +284,7 @@ def main():
             print("Testing Confusion Matrix")
             print(val_cm)
 
+            #Write results to file
             f = open("K-Fold_results.txt", "a")
             f.write("Results for fold "+str(k_count) + "\n")
             f.write("Training Accuracy: "+ str(training_accuracy)+"\n")
@@ -292,20 +294,9 @@ def main():
             f.write("Testing Accuracy"+str(val_accuracy)+"\n")
             f.write("Testing Confusion Matrix"+"\n")
             f.write(numpy.array2string(val_cm))
+            f.write("\n")
             f.close()
 
-
-            #write results to file
-
-            #     training_results = ['Training Accuracy: ' + str(training_correct/33) + "\n",
-            #                         'Validation Accuracy: ' + str(val_correct / 9) + "\n",
-            #                         "Training Confusion Matrix" +"\n",
-            #                         str(training_cm),"\n",
-            #                         "Validation Confusion Matrix" + "\n",
-            #                         str(val_cm)
-            #                         ]
-            #     for l in training_results:
-            #         f.write(l)
 
 
         k_count+=1
