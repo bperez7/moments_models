@@ -219,7 +219,7 @@ def main():
                 print('target')
                 print(target_var)
                 print([int(var) for var in target_var])
-                training_true_labels + [int(var) for var in target_var]
+                training_true_labels += [int(var) for var in target_var]
 
                 output = model(input_var)
                 print(output)
@@ -259,7 +259,7 @@ def main():
                 output = model(input_var)
 
                 print([int(torch.argmax(o)) for o in output])
-                val_pred_labels + [int(torch.argmax(o)) for o in output]
+                val_pred_labels+=[int(torch.argmax(o)) for o in output]
 
             acc_count=0
             for i in range(len(val_true_labels)):
