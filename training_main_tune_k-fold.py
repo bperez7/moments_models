@@ -196,6 +196,8 @@ def main():
         #save model every k cycle
         torch.save(model, "trained_models/" + output_model_name+"_k-"+str(k_count)+".pth")
 
+        #Confusion Matrix Evaluation
+
         with torch.no_grad():
             training_correct = 0
 
@@ -214,6 +216,9 @@ def main():
                 input_var = batch[0].cuda()
                 # output = model(input_var)
                 target_var = torch.autograd.Variable(batch[1].cuda())
+                print('target')
+                print(target_var)
+                print([int(var) for var in target_var])
                 training_true_labels + [int(var) for var in target_var]
 
                 output = model(input_var)
@@ -270,6 +275,18 @@ def main():
             print(training_cm)
             print(val_cm)
 
+            #write results to file
+
+            #     training_results = ['Training Accuracy: ' + str(training_correct/33) + "\n",
+            #                         'Validation Accuracy: ' + str(val_correct / 9) + "\n",
+            #                         "Training Confusion Matrix" +"\n",
+            #                         str(training_cm),"\n",
+            #                         "Validation Confusion Matrix" + "\n",
+            #                         str(val_cm)
+            #                         ]
+            #     for l in training_results:
+            #         f.write(l)
+
 
         k_count+=1
 
@@ -299,15 +316,7 @@ def main():
 
 
 
-#     training_results = ['Training Accuracy: ' + str(training_correct/33) + "\n",
-#                         'Validation Accuracy: ' + str(val_correct / 9) + "\n",
-#                         "Training Confusion Matrix" +"\n",
-#                         str(training_cm),"\n",
-#                         "Validation Confusion Matrix" + "\n",
-#                         str(val_cm)
-#                         ]
-#     for l in training_results:
-#         f.write(l)
+
 
 
 
