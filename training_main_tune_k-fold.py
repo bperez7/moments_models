@@ -289,7 +289,8 @@ def main():
             f.write("Training Confusion Matrix"+"\n")
             f.write(numpy.array2string(training_cm))
             f.write("\n")
-            f.write("Testing Accuracy"+str(val_accuracy))
+            f.write("Testing Accuracy"+str(val_accuracy)+"\n")
+            f.write("Testing Confusion Matrix"+"\n")
             f.write(numpy.array2string(val_cm))
             f.close()
 
