@@ -2,6 +2,8 @@ import argparse
 import os
 import time
 import shutil
+
+import numpy
 import torch
 import json
 import torchvision
@@ -285,9 +287,9 @@ def main():
             f.write("Results for fold "+str(k_count))
             f.write("Training Accuracy: "+ str(training_accuracy))
             f.write("Training Confusion Matrix")
-            f.write(training_cm)
+            f.write(numpy.array2string(training_cm))
             f.write("Testing Accuracy"+str(val_accuracy))
-            f.write(val_cm)
+            f.write(numpy.array2string(val_cm))
             f.close()
 
 
