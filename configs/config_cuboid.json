@@ -13,14 +13,14 @@
     },
 
     "file_paths": {
-      "video_file_path": "machine_videos/machine/excavating/6Hdj.mp4",
+      "video_file_path": "machine_videos/machine/bulldozing/Q0Tg.mp4",
       "output_file": "fine_tuning_testing",
       "output_folder": "trial_videos"
 
     },
 
     "parameters": {
-      "video_start_time": 0,
+      "video_start_time": 80,
       "max_number_of_objects": 4,
       "allow_overlapping_bboxes": false,
       "bbox_expansion_factor": 0.8
